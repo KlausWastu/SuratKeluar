@@ -138,7 +138,11 @@
                 </thead>
                 <% suratkeluar.sort(); %>
                 <tbody>
-                  <% for(let i = suratkeluar.length - 10 ; i <
+                  <% if(suratkeluar.length === 0) {%>
+                  <tr>
+                    <td colspan="5">Tidak Ada Surat Keluar</td>
+                  </tr>
+                  <% } else {%> <% for(let i = suratkeluar.length - 10 ; i <
                   suratkeluar.length; i++) {%>
                   <tr>
                     <td><%= suratkeluar[i].noDokumen %></td>
@@ -157,7 +161,7 @@
                       <% } %>
                     </td>
                   </tr>
-                  <% } %>
+                  <% } %> <% } %>
                 </tbody>
               </table>
             </div>
