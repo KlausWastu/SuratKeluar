@@ -1,0 +1,87 @@
+<table
+  id="example2"
+  class="table table-bordered table-hover text-center text-align-center"
+>
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Tanggal</th>
+      <th>Kode Klasifikasi</th>
+      <th>Nomor Dokumen</th>
+      <th>Perihal</th>
+      <th>Tujuan</th>
+      <th>Penyusun</th>
+      <th>PIC</th>
+      <th>Upload Dokumen</th>
+      <th>Status Surat</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for(let i = 0; i < suratkeluar.length; i++){ %>
+    <tr>
+      <td><%= i+1 %></td>
+      <td><%= suratkeluar[i].tanggal %></td>
+      <td><%= suratkeluar[i].kodebuku.kodedokumen %></td>
+      <td><%= suratkeluar[i].noDokumen %></td>
+      <td><%= suratkeluar[i].perihal %></td>
+      <td><%= suratkeluar[i].tujuan %></td>
+      <td><%= suratkeluar[i]?.departemen?.nameDepartemen ?? '-' %></td>
+      <td><%= suratkeluar[i]?.pegawai?.namaPegawai ?? '-' %></td>
+      <td>
+        <a href="upload/files/<%= suratkeluar[i].uploadPdf %>" target="_blank"
+          ><%= suratkeluar[i].uploadPdf %></a
+        >
+      </td>
+      <td>
+        <% if(suratkeluar[i].status === 'S') { %>
+        <span class="badge badge-success">Success</span>
+        <% } else if(suratkeluar[i].status === 'D'){ %>
+        <span class="badge badge-secondary">Draft</span>
+        <% } else if(suratkeluar[i].status === 'T'){ %>
+        <span class="badge badge-warning">Terisi</span>
+        <% } else if(suratkeluar[i].status === 'C'){ %>
+        <span class="badge badge-danger">Cancel</span>
+        <% } %>
+      </td>
+      <td>
+        <% if(suratkeluar[i].status === 'T' || suratkeluar[i].status === 'D')
+        {%>
+        <form
+          action="/suratkeluar/status/<%= suratkeluar[i]._id %>?status=C&_method=PUT"
+          style="display: inline-block"
+          method="POST"
+        >
+          <button class="btn btn-secondary btn-sm">Cancel</button>
+        </form>
+        <%} if(suratkeluar[i].status === 'T') { %>
+        <form
+          action="/suratkeluar/status/<%= suratkeluar[i]._id %>?status=S&_method=PUT"
+          style="display: inline-block"
+          method="POST"
+        >
+          <button class="btn btn-success btn-sm">Success</button>
+        </form>
+        <% } %> <% if(suratkeluar[i].status != 'C') {%>
+        <a
+          href="/suratkeluar/edit/<%= suratkeluar[i]._id %>"
+          class="btn btn-warning btn-sm"
+        >
+          <i class="fas fa-pencil-alt"> Edit </i>
+        </a>
+        <% } %> <% if(suratkeluar[i].status != 'D') {%>
+        <form
+          action="/suratkeluar/delete/<%= suratkeluar[i]._id %>?_method=DELETE"
+          method="POST"
+          style="display: inline-block"
+        >
+          <button class="btn btn-danger btn-sm">
+            <i class="fas fa-trash"> Hapus </i>
+          </button>
+        </form>
+        <% } %>
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>

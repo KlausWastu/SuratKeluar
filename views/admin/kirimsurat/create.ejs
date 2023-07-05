@@ -1,0 +1,198 @@
+<%- include ../../partials/header.ejs %> <%- include ../../partials/navbar.ejs
+%> <%- include ../../partials/sidebar.ejs %>
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Kirim Surat</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item">
+              <a href="/kirimsurat">Kirim Surat</a>
+            </li>
+            <li class="breadcrumb-item active">Tambah</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Form Tambah Kirim Surat</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form action="/kirimsurat/create" method="POST">
+              <div class="card-body">
+                <div class="form-group">
+                  <label style="color: red">*</label
+                  ><label>Nomor Dokumen</label>
+                  <select
+                    class="form-control select2"
+                    style="width: 100%"
+                    name="noDokumen"
+                    required
+                  >
+                    <option selected="selected">Pilih Nomor Dokumen</option>
+                    <% nodokumen.forEach(nodok=> { %>
+                    <option value="<%= nodok._id%>">
+                      <%= nodok.noDokumen %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label style="color: red">*</label><label>Kurir</label>
+                  <select
+                    id="kurirSelect"
+                    class="form-control select2"
+                    style="width: 100%"
+                    name="kurir"
+                    required
+                  >
+                    <option selected>Pilih Kurir</option>
+                    <% kurir.forEach(kurir=> { %>
+                    <option value="<%= kurir._id %>">
+                      <%= kurir.kurirName %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div
+                  class="form-group"
+                  id="fieldHandcarry"
+                  style="display: none"
+                >
+                  <label style="color: red">*</label
+                  ><label for="handcarry">Nama HandCarry: </label>
+                  <select
+                    name="namehandcarry"
+                    id="namehandcarry"
+                    class="form-control select2"
+                    style="width: 100%"
+                    required
+                  >
+                    <option selected>Pilih Pegawai</option>
+                    <% pegawai.forEach(pegawai => { %>
+                    <option value="<%= pegawai._id %>">
+                      <%= pegawai.namaPegawai %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label style="color: red">*</label
+                  ><label>Tanggal Kirim :</label>
+                  <div
+                    class="input-group date"
+                    id="tanggalkirim"
+                    data-target-input="nearest"
+                  >
+                    <input
+                      type="text"
+                      name="tanggalkirim"
+                      class="form-control datetimepicker-input"
+                      data-target="#tanggalkirim"
+                      required
+                    />
+                    <div
+                      class="input-group-append"
+                      data-target="#tanggalkirim"
+                      data-toggle="datetimepicker"
+                    >
+                      <div class="input-group-text">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Tanggal Terima :</label>
+                  <div
+                    class="input-group date"
+                    id="tanggalterima"
+                    data-target-input="nearest"
+                  >
+                    <input
+                      type="text"
+                      name="tanggalterima"
+                      class="form-control datetimepicker-input"
+                      data-target="#tanggalterima"
+                    />
+                    <div
+                      class="input-group-append"
+                      data-target="#tanggalterima"
+                      data-toggle="datetimepicker"
+                    >
+                      <div class="input-group-text">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label style="color: red">*</label
+                  ><label for="noresi">Nomor Resi</label>
+                  <input
+                    type="text"
+                    name="noresi"
+                    class="form-control"
+                    id="noresi"
+                    placeholder="Masukan Nomor Resi"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="penerima">Penerima</label>
+                  <input
+                    type="text"
+                    name="penerima"
+                    class="form-control"
+                    id="penerima"
+                    placeholder="Masukan Nama Penerima"
+                  />
+                </div>
+              </div>
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Simpan</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<%- include ../../partials/footer.ejs %> <%- include ../../partials/js.ejs %>
+<script>
+  const select = document.getElementById("kurirSelect");
+  const fieldHandcarry = document.getElementById("fieldHandcarry");
+  select.onchange = function () {
+    if (this.value === "64378bb0227ecdcdacef9705") {
+      fieldHandcarry.style.display = "block";
+    } else {
+      fieldHandcarry.style.display = "none";
+    }
+  };
+  $("#tanggalkirim").datetimepicker({
+    format: "L",
+  });
+  $("#tanggalterima").datetimepicker({
+    format: "L",
+  });
+</script>

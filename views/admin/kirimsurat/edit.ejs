@@ -1,0 +1,219 @@
+<%- include ../../partials/header.ejs %> <%- include ../../partials/navbar.ejs
+%> <%- include ../../partials/sidebar.ejs %>
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Kirim Surat</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item">
+              <a href="/kirimsurat">Kirim Surat</a>
+            </li>
+            <li class="breadcrumb-item active">Edit</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">
+                Form Edit Kirim Surat <%= kirimsurat.nodokumen.noDokumen %>
+              </h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form
+              action="/kirimsurat/edit/<%= kirimsurat._id %>?_method=PUT"
+              method="POST"
+            >
+              <div class="card-body">
+                <div class="form-group">
+                  <label style="color: red">*</label
+                  ><label>Nomor Dokumen</label>
+                  <select
+                    class="form-control select2"
+                    style="width: 100%"
+                    name="noDokumen"
+                    required
+                  >
+                    <option selected="selected">Pilih Kode Dokumen</option>
+                    <% nodokumen.forEach(nodok=> { %> <% if(nodok._id.toString()
+                    === kirimsurat.nodokumen._id.toString()) { %>
+                    <option value="<%= nodok._id %>" selected>
+                      <%= nodok.noDokumen %>
+                    </option>
+                    <% } else { %>
+                    <option value="<%= nodok._id %>">
+                      <%= nodok.noDokumen %>
+                    </option>
+                    <% } %> <% }) %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label style="color: red">*</label><label>Kurir</label>
+                  <select
+                    class="form-control select2"
+                    style="width: 100%"
+                    name="kurir"
+                    required
+                  >
+                    <option selected="selected">Pilih Kurir</option>
+                    <% kurir.forEach(kurir=> { %> <% if(kurir._id.toString() ===
+                    kirimsurat.kurir._id.toString()) { %>
+                    <option value="<%= kurir._id %>" selected>
+                      <%= kurir.kurirName %>
+                    </option>
+                    <% } else { %>
+                    <option value="<%= kurir._id %>">
+                      <%= kurir.kurirName %>
+                    </option>
+                    <% } %> <% }) %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label style="color: red">*</label
+                  ><label>Tanggal Kirim :</label>
+                  <div
+                    class="input-group date"
+                    id="tanggalkirim"
+                    data-target-input="nearest"
+                  >
+                    <input
+                      type="text"
+                      name="tanggalkirim"
+                      class="form-control datetimepicker-input"
+                      data-target="#tanggalkirim"
+                      required
+                      value="<%= kirimsurat.tanggalKirim %>"
+                    />
+                    <div
+                      class="input-group-append"
+                      data-target="#tanggalkirim"
+                      data-toggle="datetimepicker"
+                    >
+                      <div class="input-group-text">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Tanggal Terima :</label>
+                  <div
+                    class="input-group date"
+                    id="tanggalterima"
+                    data-target-input="nearest"
+                  >
+                    <input
+                      type="text"
+                      name="tanggalterima"
+                      class="form-control datetimepicker-input"
+                      data-target="#tanggalterima"
+                      value="<%= kirimsurat.tanggalTerima %>"
+                    />
+                    <div
+                      class="input-group-append"
+                      data-target="#tanggalterima"
+                      data-toggle="datetimepicker"
+                    >
+                      <div class="input-group-text">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label style="color: red">*</label
+                  ><label for="noresi">Nomor Resi</label>
+                  <input
+                    type="text"
+                    name="noresi"
+                    class="form-control"
+                    id="noresi"
+                    placeholder="Masukan Nomor Resi"
+                    required
+                    value="<%= kirimsurat.noresi %>"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="penerima">Penerima</label>
+                  <input
+                    type="text"
+                    name="penerima"
+                    class="form-control"
+                    id="penerima"
+                    placeholder="Masukan Nama Penerima"
+                    value="<%= kirimsurat.penerima %>"
+                  />
+                </div>
+              </div>
+              <!-- <div class="card-body">
+                <div class="form-group">
+                  <label></label>
+                  <div class="icheck-primary d-inline">
+                    <input type="checkbox" id="return-checkbox" />
+                    <label for="return-checkbox"> Return </label> (Surat
+                    dikembalikan kepada SPJT)
+                  </div>
+                </div>
+
+                <div class="form-group" id="upload-form" style="display: none">
+                  <label style="color: red">*</label
+                  ><label for="uploaddokumenreturnsurat">Upload Dokumen</label>
+                  <input
+                    type="file"
+                    name="uploaddokumenreturnsurat"
+                    class="form-control"
+                    id="uploaddokumenreturnsurat"
+                    placeholder="Masukan dokumen"
+                    accept="application/pdf"
+                  />
+                  <br />
+                </div>
+              </div> -->
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Simpan</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<%- include ../../partials/footer.ejs %> <%- include ../../partials/js.ejs %>
+<!-- <script>
+  $("#tanggalkirim").datetimepicker({
+    format: "L",
+  });
+  $("#tanggalterima").datetimepicker({
+    format: "L",
+  });
+  const returnCheckbox = document.getElementById("return-checkbox");
+  const uploadForm = document.getElementById("upload-form");
+
+  returnCheckbox.addEventListener("change", () => {
+    if (returnCheckbox.checked) {
+      uploadForm.style.display = "block";
+    } else {
+      uploadForm.style.display = "none";
+    }
+  });
+</script> -->

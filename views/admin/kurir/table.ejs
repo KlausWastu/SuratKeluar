@@ -1,0 +1,44 @@
+<table id="example2" class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Kurir</th>
+      <th>Url Tracking</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for(let i = 0; i < kurir.length; i++){ %>
+    <tr>
+      <td><%= i+1 %></td>
+      <td><%= kurir[i].kurirName %></td>
+      <td>
+        <% if( kurir[i].urlTracking === "-"){ %> <%= kurir[i].urlTracking%> <% }
+        else { %>
+
+        <a href="<%= kurir[i].urlTracking%>" target="_blank"
+          ><%= kurir[i].urlTracking%></a
+        >
+        <% } %>
+      </td>
+      <td>
+        <a
+          href="/kurir/edit/<%= kurir[i]._id %>"
+          class="btn btn-warning btn-sm"
+        >
+          <i class="fas fa-pencil-alt"> Edit </i>
+        </a>
+        <form
+          action="/kurir/delete/<%= kurir[i]._id %>?_method=DELETE"
+          method="POST"
+          style="display: inline-block"
+        >
+          <button class="btn btn-danger btn-sm">
+            <i class="fas fa-trash"> Hapus </i>
+          </button>
+        </form>
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>

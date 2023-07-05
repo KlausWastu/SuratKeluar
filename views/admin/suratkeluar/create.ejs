@@ -1,0 +1,195 @@
+<%- include ../../partials/header.ejs %> <%- include ../../partials/navbar.ejs
+%> <%- include ../../partials/sidebar.ejs %>
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Surat Keluar</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item">
+              <a href="/suratkeluar">Surat Keluar</a>
+            </li>
+            <li class="breadcrumb-item active">Tambah</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Form Tambah Surat Keluar</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form
+              action="/suratkeluar/create"
+              method="POST"
+              enctype="multipart/form-data"
+            >
+              <div class="card-body">
+                <div class="form-group">
+                  <label for="tanggal">Tanggal </label>
+                  <input
+                    type="text"
+                    name="tanggal"
+                    class="form-control"
+                    id="tanggal"
+                    value="<%= date %>"
+                    disabled
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Kode Klasifikasi</label>
+                  <select
+                    class="form-control select2"
+                    style="width: 100%"
+                    name="kodebuku"
+                    required
+                    id="pilihKode"
+                    disabled
+                  >
+                    <option selected="selected">Pilih Kode Klasifikasi</option>
+                    <% kodebuku.forEach(kode => { %> <% if(kode._id.toString()
+                    === kodeklasifikasi) { %>
+                    <option value="<%= kode._id %>" selected>
+                      <%= kode.kodedokumen %>
+                    </option>
+                    <% } else { %>
+                    <option value="<%= kode._id %>">
+                      <%= kode.kodedokumen %>
+                    </option>
+                    <% } %> <% }) %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="noDokumen">Nomor Dokumen</label>
+                  <input
+                    type="text"
+                    name="noDokumen"
+                    class="form-control"
+                    id="noDokumen"
+                    placeholder="Masukan Nomor Dokumen"
+                    required
+                  />
+                  <button
+                    class="btn btn-primary"
+                    id="show-nodok"
+                    style="margin-top: 4px"
+                    disabled
+                  >
+                    Nomor Dokumen
+                  </button>
+                </div>
+                <div class="form-group">
+                  <label style="color: red">*</label
+                  ><label for="perihal">Perihal</label>
+                  <input
+                    type="text"
+                    name="perihal"
+                    class="form-control"
+                    id="perihal"
+                    placeholder="Masukan Perihal"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label style="color: red">*</label
+                  ><label for="tujuan">Tujuan</label>
+                  <input
+                    type="text"
+                    name="tujuan"
+                    class="form-control"
+                    id="tujuan"
+                    placeholder="Masukan alamat tujuan"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label style="color: red">*</label><label>Penyusun</label>
+                  <select
+                    class="form-control select2"
+                    style="width: 100%"
+                    name="departemen"
+                    required
+                  >
+                    <option selected="selected">Pilih Departemen</option>
+                    <% departemen.forEach(departemen=> { %>
+                    <option value="<%= departemen._id %>">
+                      <%= departemen.nameDepartemen %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label style="color: red">*</label><label>PIC</label>
+                  <select
+                    class="form-control select2"
+                    style="width: 100%"
+                    name="namaPegawai"
+                    required
+                  >
+                    <option selected="selected">
+                      Pilih Pegawai Penanggung Jawab
+                    </option>
+                    <% pegawai.forEach(pegawai=> { %>
+                    <option value="<%= pegawai._id %>">
+                      <%= pegawai.namaPegawai %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="uploaddokumen">Upload Dokumen</label>
+                  <input
+                    type="file"
+                    name="uploaddokumen"
+                    class="form-control"
+                    id="uploaddokumen"
+                    placeholder="Masukan dokumen"
+                    accept="application/pdf"
+                  />
+                  <br />
+                </div>
+              </div>
+              <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Simpan</button>
+                <a href="/suratkeluar/klasifikasi" class="btn btn-secondary"
+                  >Kembali</a
+                >
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<script>
+  const shownodok = document.getElementById("show-nodok");
+  const DokumenToInput = document.getElementById("noDokumen");
+  shownodok.onclick = function () {
+    DokumenToInput.value = "<%= nodok %>";
+  };
+  if (document.getElementById("noDokumen").value !== "") {
+    document.getElementById("show-nodok").disabled = true;
+  } else {
+    document.getElementById("show-nodok").disabled = false;
+  }
+</script>
+<%- include ../../partials/footer.ejs %> <%- include ../../partials/js.ejs %>

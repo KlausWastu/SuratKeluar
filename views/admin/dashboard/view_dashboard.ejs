@@ -1,0 +1,227 @@
+<%- include ../../partials/header.ejs %> <%- include ../../partials/navbar.ejs
+%> <%- include ../../partials/sidebar.ejs %>
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Dashboard</h1>
+        </div>
+        <!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard</li>
+          </ol>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <!-- Info box status success surat keluar -->
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box">
+          <span class="info-box-icon bg-success elevation-1"
+            ><i class="fa fa-check-circle"></i
+          ></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text"> <strong>Surat Sukses</strong> </span>
+            <span class="info-box-number">
+              <%= statistikStatus.sukses %>
+              <h7>Dokumen</h7>
+            </span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- Info box status cancel surat keluar -->
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box">
+          <span class="info-box-icon bg-danger elevation-1"
+            ><i class="fa fa-times-circle"></i
+          ></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text"><strong>Surat Cancel</strong></span>
+            <span class="info-box-number">
+              <%= statistikStatus.cancel %>
+              <h7>Dokumen</h7>
+            </span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- Info box status terisi surat keluar -->
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box">
+          <span class="info-box-icon bg-warning elevation-1"
+            ><i class="fa fa-check-square"></i
+          ></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text"><strong>Surat Terisi</strong></span>
+            <span class="info-box-number">
+              <%= statistikStatus.terisi %>
+              <h7>Dokumen</h7>
+            </span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+      <!-- Info box status draft surat keluar -->
+      <div class="col-12 col-sm-6 col-md-3">
+        <div class="info-box">
+          <span class="info-box-icon bg-secondary elevation-1"
+            ><i class="fa fa-clock"></i
+          ></span>
+
+          <div class="info-box-content">
+            <span class="info-box-text"><strong>Surat Draft</strong></span>
+            <span class="info-box-number">
+              <%= statistikStatus.draft %>
+              <h7>Dokumen</h7>
+            </span>
+          </div>
+          <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header border-transparent">
+            <h3 class="card-title">Latest Surat</h3>
+
+            <div class="card-tools">
+              <button
+                type="button"
+                class="btn btn-tool"
+                data-card-widget="collapse"
+              >
+                <i class="fas fa-minus"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-tool"
+                data-card-widget="remove"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table m-0">
+                <thead>
+                  <tr>
+                    <th>Nomor Dokumen</th>
+                    <th>Perihal</th>
+                    <th>Tujuan</th>
+                    <th>PIC</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <% suratkeluar.sort(); %>
+                <tbody>
+                  <% for(let i = suratkeluar.length - 10 ; i <
+                  suratkeluar.length; i++) {%>
+                  <tr>
+                    <td><%= suratkeluar[i].noDokumen %></td>
+                    <td><%= suratkeluar[i].perihal %></td>
+                    <td><%= suratkeluar[i].tujuan %></td>
+                    <td><%= suratkeluar[i].pegawai.namaPegawai %></td>
+                    <td>
+                      <% if(suratkeluar[i].status === 'S') { %>
+                      <span class="badge badge-success">Success</span>
+                      <% } else if(suratkeluar[i].status === 'D'){ %>
+                      <span class="badge badge-secondary">Draft</span>
+                      <% } else if(suratkeluar[i].status === 'T'){ %>
+                      <span class="badge badge-warning">Terisi</span>
+                      <% } else if(suratkeluar[i].status === 'C'){ %>
+                      <span class="badge badge-danger">Cancel</span>
+                      <% } %>
+                    </td>
+                  </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+            <!-- /.table-responsive -->
+          </div>
+          <!-- /.card-body -->
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-header">
+            <h1 class="card-title">
+              <i class="fa-solid fa-chart-simple mr-1"></i>
+              Top 5 Penerima Surat SPJT
+            </h1>
+            <div class="card-tools">
+              <button
+                type="button"
+                class="btn btn-tool"
+                data-card-widget="collapse"
+              >
+                <i class="fas fa-minus"></i>
+              </button>
+              <button
+                type="button"
+                class="btn btn-tool"
+                data-card-widget="remove"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th style="width: 10px">No</th>
+                    <th>Penerima</th>
+                    <th>Quantity</th>
+                  </tr>
+                </thead>
+
+                <% top.sort((a, b) => b.count - a.count); %>
+                <tbody>
+                  <% top.slice(0,5).forEach((penerima, i) => { %>
+                  <tr>
+                    <td><%= i+1 %></td>
+                    <td><%= penerima._id %></td>
+                    <td><%= penerima.count %></td>
+                  </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- /.card-body -->
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+
+<%- include ../../partials/footer.ejs %> <%- include ../../partials/js.ejs %>

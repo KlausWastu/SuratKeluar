@@ -1,0 +1,61 @@
+<table id="example2" class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Departemen</th>
+      <th>Status</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for(let i = 0; i < departemen.length; i++){ %>
+    <tr>
+      <td><%= i+1 %></td>
+      <td><%= departemen[i].nameDepartemen %></td>
+      <td>
+        <% if(departemen[i].status ==='Y'){ %>
+        <i class="fa fa-circle fa-sm" aria-hidden="true" style="color: #22db14">
+          Aktif
+        </i>
+        <% } else {%>
+        <i class="fa fa-circle fa-sm" aria-hidden="true" style="color: #f00000">
+          Non-Aktif
+        </i>
+        <% }%>
+      </td>
+      <td>
+        <form
+          action="/departemen/status/<%= departemen[i]._id %>?_method=PUT"
+          style="display: inline-block"
+          method="POST"
+        >
+          <% if(departemen[i].status === 'Y') { %>
+          <button class="btn btn-secondary btn-sm">
+            <i class="fa fa-power-off"> Non-aktifkan </i>
+          </button>
+          <% } else { %>
+          <button class="btn btn-success btn-sm">
+            <i class="fa fa-power-off"> Aktifkan </i>
+          </button>
+          <% } %>
+        </form>
+        <a
+          href="/departemen/edit/<%= departemen[i]._id %>"
+          class="btn btn-warning btn-sm"
+        >
+          <i class="fas fa-pencil-alt"> Edit </i>
+        </a>
+        <form
+          action="/departemen/delete/<%= departemen[i]._id %>?_method=DELETE"
+          method="POST"
+          style="display: inline-block"
+        >
+          <button class="btn btn-danger btn-sm">
+            <i class="fas fa-trash"> Hapus </i>
+          </button>
+        </form>
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>

@@ -1,0 +1,88 @@
+<%- include ../../partials/header.ejs %> <%- include ../../partials/navbar.ejs
+%> <%- include ../../partials/sidebar.ejs %>
+<div class="content-wrapper">
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Surat Keluar</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="/">Home</a></li>
+            <li class="breadcrumb-item">
+              <a href="/suratkeluar">Surat Keluar</a>
+            </li>
+            <li class="breadcrumb-item active">Tambah</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Form Kode Klasifikasi</h3>
+            </div>
+            <!-- /.card-header -->
+            <!-- form start -->
+            <form action="/suratkeluar/kodeklasifikasi" method="POST">
+              <div class="card-body">
+                <div class="form-group">
+                  <label>Kode Klasifikasi</label>
+                  <select
+                    id="kodeklasifikasi"
+                    class="form-control select2"
+                    style="width: 100%"
+                    name="kodebuku"
+                  >
+                    <option selected="selected">Pilih Kode Klasifikasi</option>
+                    <% kodebuku.forEach(kode=> { %>
+                    <option value="<%= kode._id %>">
+                      <%= kode.kodedokumen %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button
+                  type="submit"
+                  id="bton"
+                  disabled
+                  class="btn btn-primary"
+                >
+                  Next
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+</div>
+<script>
+  document.getElementById("kodeklasifikasi").onchange = function () {
+    if (
+      document.getElementById("kodeklasifikasi").value !==
+      "Pilih Kode Klasifikasi"
+    ) {
+      document.getElementById("bton").disabled = false;
+    } else {
+      document.getElementById("bton").disabled = true;
+    }
+  };
+</script>
+<%- include ../../partials/footer.ejs %> <%- include ../../partials/js.ejs %>

@@ -1,0 +1,62 @@
+<table id="example2" class="table table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Nama</th>
+      <th>Departemen</th>
+      <th>Email</th>
+      <th>Password</th>
+      <th>Status</th>
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for(let i = 0; i < adduser.length; i++){ %>
+    <tr>
+      <td><%= i+1 %></td>
+      <td><%= adduser[i]?.user?.name ?? '-' %></td>
+      <td><%= adduser[i].departemen %></td>
+      <td><%= adduser[i]?.user?.email ?? '-' %></td>
+      <td><%= adduser[i]?.user?.password ?? '-' %></td>
+      <% if(adduser[i]?.user?.status === "Y") {%>
+      <td>
+        <i class="fa fa-circle fa-sm" aria-hidden="true" style="color: #22db14">
+          Aktif
+        </i>
+      </td>
+      <%} else {%>
+      <td>
+        <i class="fa fa-circle fa-sm" aria-hidden="true" style="color: #f00000">
+          Non-Aktif
+        </i>
+      </td>
+      <% } %>
+      <td>
+        <a
+          href="/adduser/edit/<%= adduser[i]._id %>"
+          class="btn btn-warning btn-sm"
+        >
+          <i class="fas fa-pencil-alt"> Edit </i>
+        </a>
+        <% if(adduser[i]?.user?.status === "Y") {%>
+        <form
+          action="/adduser/status/<%= adduser[i]._id %>?status=N&_method=PUT"
+          method="POST"
+          style="display: inline-block"
+        >
+          <button class="btn btn-danger btn-sm">Non-Aktifkan</button>
+        </form>
+        <% } else { %>
+        <form
+          action="/adduser/status/<%= adduser[i]._id %>?status=Y&_method=PUT"
+          method="POST"
+          style="display: inline-block"
+        >
+          <button class="btn btn-success btn-sm">Aktifkan</button>
+        </form>
+        <% } %>
+      </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
