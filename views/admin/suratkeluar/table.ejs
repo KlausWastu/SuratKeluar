@@ -15,63 +15,67 @@
       <th>Upload Dokumen</th>
       <th>Status Surat</th>
       <th>Aksi</th>
+      <th >created</th>
     </tr>
   </thead>
+  
   <tbody>
-    <% for(let i = 0; i < suratkeluar.length; i++){ %>
+    <% const sortirSuratKeluar = suratkeluar.slice().sort((a,b)=> new Date(b.createdAt)- new Date(a.createdAt))
+    for(let i = 0; i < sortirSuratKeluar.length; i++){ 
+      let surat = sortirSuratKeluar[i] %>
     <tr>
       <td><%= i+1 %></td>
-      <td><%= suratkeluar[i].tanggal %></td>
-      <td><%= suratkeluar[i].kodebuku.kodedokumen %></td>
-      <td><%= suratkeluar[i].noDokumen %></td>
-      <td><%= suratkeluar[i].perihal %></td>
-      <td><%= suratkeluar[i].tujuan %></td>
-      <td><%= suratkeluar[i]?.departemen?.nameDepartemen ?? '-' %></td>
-      <td><%= suratkeluar[i]?.pegawai?.namaPegawai ?? '-' %></td>
+      <td><%= surat.tanggal %></td>
+      <td><%= surat.kodebuku.kodedokumen %></td>
+      <td><%= surat.noDokumen %></td>
+      <td><%= surat.perihal %></td>
+      <td><%= surat.tujuan %></td>
+      <td><%= surat?.departemen?.nameDepartemen ?? '-' %></td>
+      <td><%= surat?.pegawai?.namaPegawai ?? '-' %></td>
       <td>
-        <a href="upload/files/<%= suratkeluar[i].uploadPdf %>" target="_blank"
-          ><%= suratkeluar[i].uploadPdf %></a
+        <a href="upload/files/<%= surat.uploadPdf %>" target="_blank"
+          ><%= surat.uploadPdf %></a
         >
       </td>
       <td>
-        <% if(suratkeluar[i].status === 'S') { %>
+        <% if(surat.status === 'S') { %>
         <span class="badge badge-success">Success</span>
-        <% } else if(suratkeluar[i].status === 'D'){ %>
+        <% } else if(surat.status === 'D'){ %>
         <span class="badge badge-secondary">Draft</span>
-        <% } else if(suratkeluar[i].status === 'T'){ %>
+        <% } else if(surat.status === 'T'){ %>
         <span class="badge badge-warning">Terisi</span>
-        <% } else if(suratkeluar[i].status === 'C'){ %>
+        <% } else if(surat.status === 'C'){ %>
         <span class="badge badge-danger">Cancel</span>
         <% } %>
       </td>
       <td>
-        <% if(suratkeluar[i].status === 'T' || suratkeluar[i].status === 'D')
+        <% if(surat.status === 'T' || surat.status === 'D')
         {%>
         <form
-          action="/suratkeluar/status/<%= suratkeluar[i]._id %>?status=C&_method=PUT"
+          action="/suratkeluar/status/<%= surat._id %>?status=C&_method=PUT"
           style="display: inline-block"
           method="POST"
         >
           <button class="btn btn-secondary btn-sm">Cancel</button>
         </form>
-        <%} if(suratkeluar[i].status === 'T') { %>
+        <%} if(surat.status === 'T') { %>
         <form
-          action="/suratkeluar/status/<%= suratkeluar[i]._id %>?status=S&_method=PUT"
+          action="/suratkeluar/status/<%= surat._id %>?status=S&_method=PUT"
           style="display: inline-block"
           method="POST"
         >
           <button class="btn btn-success btn-sm">Success</button>
         </form>
-        <% } %> <% if(suratkeluar[i].status != 'C') {%>
+        <% } %> <% if(surat.status != 'C') {%>
         <a
-          href="/suratkeluar/edit/<%= suratkeluar[i]._id %>"
+          href="/suratkeluar/edit/<%= surat._id %>"
           class="btn btn-warning btn-sm"
         >
           <i class="fas fa-pencil-alt"> Edit </i>
         </a>
-        <% } %> <% if(suratkeluar[i].status != 'D') {%>
+        <% } %> <% if(surat.status != 'D') {%>
         <form
-          action="/suratkeluar/delete/<%= suratkeluar[i]._id %>?_method=DELETE"
+          action="/suratkeluar/delete/<%= surat._id %>?_method=DELETE"
           method="POST"
           style="display: inline-block"
         >
@@ -81,6 +85,7 @@
         </form>
         <% } %>
       </td>
+      <td ><%=  surat.createdAt %></td>
     </tr>
     <% } %>
   </tbody>

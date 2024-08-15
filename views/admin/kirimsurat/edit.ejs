@@ -83,25 +83,79 @@
                     <% } %> <% }) %>
                   </select>
                 </div>
+                <% if(kirimsurat.kurir._id.toString() === '64378bb0227ecdcdacef9705') { %>
+                <div
+                  class="form-group"
+                  id="fieldHandcarry"
+                  style="display: none"
+                >
+                  <label style="color: red">*</label
+                  ><label for="handcarry">Nama HandCarry: </label>
+                  <select
+                    name="nameHandCarry"
+                    id="namehandcarry"
+                    class="form-control select2"
+                    style="width: 100%"
+                    required
+                  >
+                    <% pegawai.forEach(pegawai=> { %> <%
+                    if(pegawai._id.toString() ===
+                    kirimsurat.namaHandCarry._id.toString()) { %>
+                    <option value="<%= pegawai._id %>" selected>
+                      <%= pegawai.namaPegawai %>
+                    </option>
+                    <% } else { %>
+                    <option value="<%= pegawai._id %>">
+                      <%= pegawai.namaPegawai %>
+                    </option>
+                    <% } %> <% }) %>
+                  </select>
+                </div>
+                <% } else {%>
+                  <div
+                  class="form-group"
+                  id="fieldHandcarry"
+                  style="display: none"
+                >
+                  <label style="color: red">*</label
+                  ><label for="handcarry">Nama HandCarry: </label>
+                  <select
+                    name="nameHandCarry"
+                    id="namehandcarry"
+                    class="form-control select2"
+                    style="width: 100%"
+                    required
+                  >
+                  <option selected="selected">
+                    Pilih Pegawai Penanggung Jawab
+                  </option>
+                  <% pegawai.forEach(pegawai => { %>
+                    <option value="<%= pegawai._id %>">
+                      <%= pegawai.namaPegawai %>
+                    </option>
+                    <% }) %>
+                  </select>
+                </div>
+                <% } %>
                 <div class="form-group">
                   <label style="color: red">*</label
                   ><label>Tanggal Kirim :</label>
                   <div
                     class="input-group date"
-                    id="tanggalkirim"
+                    id="reservationdate"
                     data-target-input="nearest"
                   >
                     <input
                       type="text"
                       name="tanggalkirim"
                       class="form-control datetimepicker-input"
-                      data-target="#tanggalkirim"
+                      data-target="#reservationdate"
                       required
-                      value="<%= kirimsurat.tanggalKirim %>"
+                      value="<%= kirimsurat.tanggalKirim%>"
                     />
                     <div
                       class="input-group-append"
-                      data-target="#tanggalkirim"
+                      data-target="#reservationdate"
                       data-toggle="datetimepicker"
                     >
                       <div class="input-group-text">
@@ -109,81 +163,8 @@
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label>Tanggal Terima :</label>
-                  <div
-                    class="input-group date"
-                    id="tanggalterima"
-                    data-target-input="nearest"
-                  >
-                    <input
-                      type="text"
-                      name="tanggalterima"
-                      class="form-control datetimepicker-input"
-                      data-target="#tanggalterima"
-                      value="<%= kirimsurat.tanggalTerima %>"
-                    />
-                    <div
-                      class="input-group-append"
-                      data-target="#tanggalterima"
-                      data-toggle="datetimepicker"
-                    >
-                      <div class="input-group-text">
-                        <i class="fa fa-calendar"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label style="color: red">*</label
-                  ><label for="noresi">Nomor Resi</label>
-                  <input
-                    type="text"
-                    name="noresi"
-                    class="form-control"
-                    id="noresi"
-                    placeholder="Masukan Nomor Resi"
-                    required
-                    value="<%= kirimsurat.noresi %>"
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="penerima">Penerima</label>
-                  <input
-                    type="text"
-                    name="penerima"
-                    class="form-control"
-                    id="penerima"
-                    placeholder="Masukan Nama Penerima"
-                    value="<%= kirimsurat.penerima %>"
-                  />
                 </div>
               </div>
-              <!-- <div class="card-body">
-                <div class="form-group">
-                  <label></label>
-                  <div class="icheck-primary d-inline">
-                    <input type="checkbox" id="return-checkbox" />
-                    <label for="return-checkbox"> Return </label> (Surat
-                    dikembalikan kepada SPJT)
-                  </div>
-                </div>
-
-                <div class="form-group" id="upload-form" style="display: none">
-                  <label style="color: red">*</label
-                  ><label for="uploaddokumenreturnsurat">Upload Dokumen</label>
-                  <input
-                    type="file"
-                    name="uploaddokumenreturnsurat"
-                    class="form-control"
-                    id="uploaddokumenreturnsurat"
-                    placeholder="Masukan dokumen"
-                    accept="application/pdf"
-                  />
-                  <br />
-                </div>
-              </div> -->
               <div class="card-footer">
                 <button type="submit" class="btn btn-primary">Simpan</button>
               </div>
@@ -199,21 +180,23 @@
   <!-- /.content -->
 </div>
 <%- include ../../partials/footer.ejs %> <%- include ../../partials/js.ejs %>
-<!-- <script>
-  $("#tanggalkirim").datetimepicker({
-    format: "L",
-  });
-  $("#tanggalterima").datetimepicker({
-    format: "L",
-  });
-  const returnCheckbox = document.getElementById("return-checkbox");
-  const uploadForm = document.getElementById("upload-form");
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const select = document.querySelector("select[name='kurir']");
+    const fieldHandcarry = document.getElementById("fieldHandcarry");
 
-  returnCheckbox.addEventListener("change", () => {
-    if (returnCheckbox.checked) {
-      uploadForm.style.display = "block";
+    if (select.value === "64378bb0227ecdcdacef9705") {
+      fieldHandcarry.style.display = "block";
     } else {
-      uploadForm.style.display = "none";
+      fieldHandcarry.style.display = "none";
     }
+
+    select.onchange = function () {
+      if (this.value === "64378bb0227ecdcdacef9705") {
+        fieldHandcarry.style.display = "block";
+      } else {
+        fieldHandcarry.style.display = "none";
+      }
+    };
   });
-</script> -->
+</script>

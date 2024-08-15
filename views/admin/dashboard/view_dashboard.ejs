@@ -101,7 +101,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-12">
         <div class="card">
           <div class="card-header border-transparent">
             <h3 class="card-title">Latest Surat</h3>
@@ -145,6 +145,7 @@
                   <% } else {%> <% for(let i = suratkeluar.length - 10 ; i <
                   suratkeluar.length; i++) {%>
                   <tr>
+                    <% if(suratkeluar[i]) {%>
                     <td><%= suratkeluar[i].noDokumen %></td>
                     <td><%= suratkeluar[i].perihal %></td>
                     <td><%= suratkeluar[i].tujuan %></td>
@@ -160,6 +161,7 @@
                       <span class="badge badge-danger">Cancel</span>
                       <% } %>
                     </td>
+                    <% } %>
                   </tr>
                   <% } %> <% } %>
                 </tbody>
@@ -170,7 +172,7 @@
           <!-- /.card-body -->
         </div>
       </div>
-      <div class="col-md-4">
+      <!-- <div class="col-md-4">
         <div class="card">
           <div class="card-header">
             <h1 class="card-title">
@@ -194,7 +196,6 @@
               </button>
             </div>
           </div>
-          <!-- /.card-header -->
           <div class="card-body">
             <div class="table-responsive">
               <table class="table table-bordered">
@@ -220,8 +221,7 @@
             </div>
           </div>
         </div>
-        <!-- /.card-body -->
-      </div>
+      </div> -->
     </div>
     <!-- /.container-fluid -->
   </section>

@@ -84,5 +84,8 @@
       document.getElementById("bton").disabled = true;
     }
   };
+  document.getElementById("bton").onclick = function () {
+    localStorage.setItem("kodebuku", kodeklasifikasi.value);
+  };
 </script>
 <%- include ../../partials/footer.ejs %> <%- include ../../partials/js.ejs %>

@@ -57,7 +57,7 @@ module.exports = {
       res.redirect("/suratkeluar");
     }
   },
-  viewCreate: async (req, res) => {
+  viewCreate: async (req, res) => { 
     try {
       const kodebuku = await kodeBuku.find();
       const departemen = await Departemen.find({
@@ -75,92 +75,90 @@ module.exports = {
       const slcyear = tahun.slice(2);
 
       // Slicing kode klasifikasi
+      const KODE = []
+      const kude = "39-MP (PT Megatama Putra)"
+      const index3Terdepan = kude.slice(0,3)
+      const buku2 = await kodeBuku.find({kodedokumen: {$regex: `^${index3Terdepan}`}})
+      buku2.forEach(item=>{
+        KODE.push(
+          item.kodedokumen
+        )
+      })
       const kode = req.query.kodebuku;
       const buku = await kodeBuku.findOne({ _id: kode });
       const kd = String(buku.kodedokumen);
-      const slckode = kd.slice(0, 3);
+      let kod
+      const sama = KODE.find(item=> item === kd )
+      let kodeproyek = []
+      for(item of KODE){
+        const kode = item.split(" ")
+        kodeproyek.push(
+          kode[0]
+        )
+      }
+      if(sama){
+        const part = kd.split(" ")
+        kod = part[0]
+      } else {
+        kod = kd.slice(0, 3);
+      }
+      const slckode = kod
+      // Update 12-9-2023
+      const kodeKlasifikasi = req.query.kodebuku;
+      let kodeklasifikasi
+      let stringId= []
+      for(i=0;i<buku2.length; i++){
+        stringId.push(
+          buku2[i].id.toString()
+        )
+      }
+      for(item of stringId){
+        if(kodeKlasifikasi === item ){
+          kodeklasifikasi = "64b8d47ea9582b5c6e9b33c4"
+          break
+        } else {
+          kodeklasifikasi = kodeKlasifikasi
+        }
+      }
 
       // INDEX
-
       async function getNomorDokumenTerbaru() {
-        const suratKeluarTerbaru = await SuratKeluar.findOne().sort({
-          createdAt: -1,
-        });
-        const suratKeluarSebelumTerbaru = await SuratKeluar.findOne()
-          .sort({
-            createdAt: -1,
-          })
-          .skip(1);
-        const suratKeluarCancel = await SuratKeluar.findOne({
-          statuscancel: true,
-        });
-        let index = "01";
-        let indexCancel = null;
-        let indexTerbaru = null;
-        let digitNomorDokumenTerbaru = "0";
-        let digitNomorDokumenLama = "0";
-        let digitNomorDokumen = "0";
-        if (suratKeluarCancel !== null) {
-          const nomorDokumenTerbaru = String(suratKeluarCancel.noDokumen);
-          const panjangNomorDokumenTerbaru = nomorDokumenTerbaru.length;
-          if (panjangNomorDokumenTerbaru === 20) {
-            digitNomorDokumenTerbaru = nomorDokumenTerbaru.slice(
-              panjangNomorDokumenTerbaru - 6,
-              panjangNomorDokumenTerbaru - 4
-            );
-          } else if (panjangNomorDokumenTerbaru === 21) {
-            digitNomorDokumenTerbaru = nomorDokumenTerbaru.slice(
-              panjangNomorDokumenTerbaru - 7,
-              panjangNomorDokumenTerbaru - 4
-            );
-          }
-          indexCancel = digitNomorDokumenTerbaru;
-          index = indexCancel;
-        } else if (
-          suratKeluarTerbaru !== null &&
-          suratKeluarCancel === null &&
-          (suratKeluarSebelumTerbaru !== null || !suratKeluarSebelumTerbaru)
-        ) {
-          const nomorDokumenTerbaru = String(suratKeluarTerbaru.noDokumen);
-          const panjangNomorDokumenTerbaru = nomorDokumenTerbaru.length;
-          const nomorDokumenLama = String(suratKeluarSebelumTerbaru.noDokumen);
-          const panjangNomorDokumenLama = nomorDokumenLama.length;
-          if (panjangNomorDokumenLama === 20) {
-            digitNomorDokumenLama = nomorDokumenLama.slice(
-              panjangNomorDokumenLama - 6,
-              panjangNomorDokumenLama - 4
-            );
-          } else if (panjangNomorDokumenLama === 21) {
-            digitNomorDokumenLama = nomorDokumenLama.slice(
-              panjangNomorDokumenLama - 7,
-              panjangNomorDokumenLama - 4
-            );
-          }
-          if (panjangNomorDokumenTerbaru === 20) {
-            digitNomorDokumenTerbaru = nomorDokumenTerbaru.slice(
-              panjangNomorDokumenTerbaru - 6,
-              panjangNomorDokumenTerbaru - 4
-            );
-          } else if (panjangNomorDokumenTerbaru === 21) {
-            digitNomorDokumenTerbaru = nomorDokumenTerbaru.slice(
-              panjangNomorDokumenTerbaru - 7,
-              panjangNomorDokumenTerbaru - 4
-            );
-          }
-          if (digitNomorDokumenTerbaru > digitNomorDokumenLama) {
-            digitNomorDokumen = digitNomorDokumenTerbaru;
+        // Memeriksa apakah slckode ada di array dari kodeproyek
+        if(kodeproyek.includes(slckode)|| slckode === "039"){
+          const suratkeluar = await SuratKeluar.find({kodebuku: "64b8d47ea9582b5c6e9b33c4"})
+          if(!suratkeluar || suratkeluar.length === 0){
+            index = "001"
+            return index
           } else {
-            digitNomorDokumen = digitNomorDokumenLama;
+            const suratterakhir = suratkeluar[suratkeluar.length-1].noDokumen
+            const nodokbaru = String(suratterakhir)
+            const nodok3digit = nodokbaru.slice(14,17)
+            indexTerbaru = (parseInt(nodok3digit, 10) + 1)
+                .toString()
+                .padStart(3, "0");
+              index = indexTerbaru;
+              return index
           }
-          indexTerbaru = (parseInt(digitNomorDokumen, 10) + 1)
-            .toString()
-            .padStart(2, "0");
-          index = indexTerbaru;
+        } else {
+          const suratkeluar = await SuratKeluar.find({noDokumen : {$regex: `^\\d{2}\\.\\d{2}/DIREKSI\\.\\d{3}/${slckode}$`}})
+          if(!suratkeluar || suratkeluar.length === 0){
+            index = "001"
+            return index
+          } else {
+            const suratKodeTerakhir = suratkeluar[suratkeluar.length -1].noDokumen
+            console.log("Data : ", suratKodeTerakhir)
+            const nodokbaru = String(suratKodeTerakhir)
+            const nodok3digit = nodokbaru.slice(14,17)
+            indexTerbaru = (parseInt(nodok3digit, 10) + 1)
+                .toString()
+                .padStart(3, "0");
+              index = indexTerbaru;
+              return index
+          }
         }
-        return index;
       }
       const nomorDokumenBaru = await getNomorDokumenTerbaru();
-
+      
       // Concat Nomor Dokumen = MM.YY/DIREKSI.INDEX/KODE
       const nodok =
         bulan +
@@ -172,18 +170,20 @@ module.exports = {
         "/" +
         slckode;
 
+      
       res.render("admin/suratkeluar/create", {
         kodebuku,
         departemen,
         pegawai,
         date,
         nodok,
-        kodeklasifikasi: req.query.kodebuku,
+        kodeklasifikasi,
         name: req.session.user.name,
         title: " Tambah Surat Keluar",
         role: req.session.user.role,
       });
     } catch (err) {
+      console.log("Erorr >> ", err);
       req.flash("alertMessage", `${err.message}`);
       req.flash("alertStatus", "danger");
       res.redirect("/suratkeluar");
@@ -197,7 +197,7 @@ module.exports = {
       const bulan = String(currDate.getMonth() + 1).padStart(2, "0");
       const date = Tanggal + "/" + bulan + "/" + tahun;
       const {
-        kodebuku,
+        kodeklasifikasi,
         noDokumen,
         perihal,
         tujuan,
@@ -205,6 +205,8 @@ module.exports = {
         departemen,
         namaPegawai,
       } = req.body;
+
+      console.log("kode buku: ", kodeklasifikasi);
       const nomorDok = await SuratKeluar.findOne({
         noDokumen: noDokumen.slice(0, 17),
         status: ["D", "T", "S", "C"],
@@ -212,12 +214,6 @@ module.exports = {
       const NoDok = await SuratKeluar.findOne({
         statuscancel: true,
       });
-      // if (panjangNomorDokumenLama === 20) {
-      //   digitNomorDokumenLama = nomorDokumenLama.slice(
-      //     panjangNomorDokumenLama - 6,
-      //     panjangNomorDokumenLama - 4
-      //   );
-      // }
 
       if (nomorDok) {
         if (nomorDok.isdeleted === true) {
@@ -247,11 +243,7 @@ module.exports = {
           } else if (nomorDok.noDokumen === "") {
             if (req.file) {
               let tmp_path = req.file.path;
-              let originalExt =
-                req.file.originalname.split(".")[
-                  req.file.originalname.split(".").length - 1
-                ];
-              let filename = req.file.filename + "." + originalExt;
+              let filename = req.file.originalname;
               let target_path = path.resolve(
                 config.rootPath,
                 `public/upload/files/${filename}`
@@ -270,7 +262,7 @@ module.exports = {
                   }
                   const suratkeluar = new SuratKeluar({
                     tanggal,
-                    kodebuku,
+                    kodebuku: kodeklasifikasi,
                     noDokumen,
                     perihal,
                     tujuan,
@@ -293,7 +285,7 @@ module.exports = {
             } else {
               const suratkeluar = new SuratKeluar({
                 tanggal,
-                kodebuku,
+                kodebuku: kodeklasifikasi,
                 noDokumen,
                 tujuan,
                 perihal,
@@ -316,11 +308,7 @@ module.exports = {
           } else if (nomorDok.status === "C") {
             if (req.file) {
               let tmp_path = req.file.path;
-              let originalExt =
-                req.file.originalname.split(".")[
-                  req.file.originalname.split(".").length - 1
-                ];
-              let filename = req.file.filename + "." + originalExt;
+              let filename = req.file.originalname;
               let target_path = path.resolve(
                 config.rootPath,
                 `public/upload/files/${filename}`
@@ -342,8 +330,8 @@ module.exports = {
                     { statuscancel: false }
                   );
                   const suratkeluar = new SuratKeluar({
-                    tanggal: date,
-                    kodebuku,
+                    tanggal,
+                    kodebuku: kodeklasifikasi,
                     noDokumen,
                     perihal,
                     tujuan,
@@ -368,8 +356,8 @@ module.exports = {
                 { statuscancel: false }
               );
               const suratkeluar = new SuratKeluar({
-                tanggal: date,
-                kodebuku,
+                tanggal,
+                kodebuku: kodeklasifikasi,
                 noDokumen,
                 tujuan,
                 perihal,
@@ -389,11 +377,7 @@ module.exports = {
         if (NoDok !== null) {
           if (req.file) {
             let tmp_path = req.file.path;
-            let originalExt =
-              req.file.originalname.split(".")[
-                req.file.originalname.split(".").length - 1
-              ];
-            let filename = req.file.filename + "." + originalExt;
+            let filename = req.file.originalname;
             let target_path = path.resolve(
               config.rootPath,
               `public/upload/files/${filename}`
@@ -417,8 +401,8 @@ module.exports = {
                   }
                 );
                 const suratkeluar = new SuratKeluar({
-                  tanggal: date,
-                  kodebuku,
+                  tanggal,
+                  kodebuku: kodeklasifikasi,
                   noDokumen,
                   perihal,
                   tujuan,
@@ -446,8 +430,8 @@ module.exports = {
               }
             );
             const suratkeluar = new SuratKeluar({
-              tanggal: date,
-              kodebuku,
+              tanggal,
+              kodebuku: kodeklasifikasi,
               noDokumen,
               tujuan,
               perihal,
@@ -464,11 +448,7 @@ module.exports = {
         } else {
           if (req.file) {
             let tmp_path = req.file.path;
-            let originalExt =
-              req.file.originalname.split(".")[
-                req.file.originalname.split(".").length - 1
-              ];
-            let filename = req.file.filename + "." + originalExt;
+            let filename = req.file.originalname;
             let target_path = path.resolve(
               config.rootPath,
               `public/upload/files/${filename}`
@@ -486,8 +466,8 @@ module.exports = {
                   status = "T";
                 }
                 const suratkeluar = new SuratKeluar({
-                  tanggal: date,
-                  kodebuku,
+                  tanggal,
+                  kodebuku: kodeklasifikasi,
                   noDokumen,
                   perihal,
                   tujuan,
@@ -509,8 +489,8 @@ module.exports = {
             });
           } else {
             const suratkeluar = new SuratKeluar({
-              tanggal: date,
-              kodebuku,
+              tanggal,
+              kodebuku: kodeklasifikasi,
               noDokumen,
               tujuan,
               perihal,
@@ -599,15 +579,11 @@ module.exports = {
 
       if (req.file) {
         let tmp_path = req.file.path;
-        let originalExt =
-          req.file.originalname.split(".")[
-            req.file.originalname.split(".").length - 1
-          ];
-        let filename = req.file.filename + "." + originalExt;
+        let filename = req.file.originalname;
         let target_path = path.resolve(
-          config.rootPath,
-          `public/upload/files/${filename}`
-        );
+                config.rootPath,
+              `public/upload/files/${filename}`
+              );
 
         const src = fs.createReadStream(tmp_path);
         const dest = fs.createWriteStream(target_path);
@@ -634,12 +610,12 @@ module.exports = {
                   perihal,
                   departemen,
                   uploadPdf: filename,
-                  namaPegawai,
+                  pegawai: namaPegawai,
                   status: "T",
                 }
               );
             }
-
+            console.log("Pegawai >> ", namaPegawai)
             req.flash("alertMessage", "Berhasil edit surat keluar");
             req.flash("alertStatus", "success");
 
@@ -662,9 +638,10 @@ module.exports = {
             perihal,
             tujuan,
             departemen,
-            namaPegawai,
+            pegawai:namaPegawai,
           }
         );
+        console.log("Pegawai >> ", namaPegawai)
         req.flash("alertMessage", "Berhasil Edit surat keluar");
         req.flash("alertStatus", "success");
 

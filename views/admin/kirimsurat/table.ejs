@@ -8,43 +8,39 @@
       <th>Nomor Dokumen</th>
       <th>Kurir</th>
       <th>Tanggal Kirim</th>
-      <th>Tanggal Terima</th>
-      <th>Nomor Resi</th>
-      <th>Penerima</th>
       <th>Status Kirim</th>
       <th>Aksi</th>
     </tr>
   </thead>
   <tbody>
-    <% for(let i = 0; i < kirimsurat.length; i++){ %>
+    <% const sortirKirimSurat = kirimsurat.slice().sort((a,b)=> new Date(b.createdAt)- new Date(a.createdAt))
+    for(let i = 0; i < kirimsurat.length; i++){
+      let kirim = sortirKirimSurat[i] %>
     <tr>
       <td><%= i+1 %></td>
-      <td><%= kirimsurat[i]?.nodokumen?.noDokumen ?? '-'%></td>
-      <% if(kirimsurat[i].kurir.kurirName === "HandCarry") {%>
+      <td><%= kirim?.nodokumen?.noDokumen ?? '-'%></td>
+      <% if(kirim.kurir.kurirName === "HandCarry") {%>
       <td>
-        <%= kirimsurat[i]?.kurir?.kurirName ?? '-' %> - <%=
-        kirimsurat[i]?.namaHandCarry?.namaPegawai %>
+        <%= kirim?.kurir?.kurirName ?? '-' %> - <%=
+        kirim?.namaHandCarry?.namaPegawai %>
       </td>
       <% } else { %>
-      <td><%= kirimsurat[i]?.kurir?.kurirName ?? '-' %></td>
+      <td><%= kirim?.kurir?.kurirName ?? '-' %></td>
       <% } %>
-      <td><%= kirimsurat[i].tanggalKirim %></td>
-      <td><%= kirimsurat[i].tanggalTerima %></td>
-      <td><%= kirimsurat[i].noresi %></td>
-      <td><%= kirimsurat[i].penerima %></td>
+      <td><%= kirim.tanggalKirim %></td>
       <td>
-        <% if(kirimsurat[i].statusKirim === 'T') { %>
+        <% if(kirim.statusKirim === 'T') { %>
         <span class="badge badge-success">Terkirim</span>
-        <% } else { %> <% if(kirimsurat[i].statusKirim === 'D') {%>
+        <% } else { %> <% if(kirim.statusKirim === 'D') {%>
         <span class="badge badge-secondary">Dikirim</span>
-        <% } else if(kirimsurat[i].statusKirim === 'R') { %>
+        <% } else if(kirim.statusKirim === 'R') { %>
         <span class="badge badge-warning">Retur</span>
         <% } %> <% }%>
       </td>
       <td>
-        <% if(kirimsurat[i].statusKirim === 'D') {%>
+        <% if(kirim.statusKirim === 'D') {%>
         <form
-          action="/kirimsurat/status/<%= kirimsurat[i]._id %>?statusKirim=T&_method=PUT"
+          action="/kirimsurat/status/<%= kirim._id %>?statusKirim=T&_method=PUT"
           style="display: inline-block"
           method="POST"
         >
@@ -53,7 +49,7 @@
           </button>
         </form>
         <form
-          action="/kirimsurat/status/<%= kirimsurat[i]._id %>?statusKirim=R&_method=PUT"
+          action="/kirimsurat/status/<%= kirim._id %>?statusKirim=R&_method=PUT"
           style="display: inline-block"
           method="POST"
         >
@@ -61,16 +57,16 @@
             <i class=""> Retur </i>
           </button>
         </form>
-        <% } %> <% if( kirimsurat[i].statusKirim != 'R') {%>
+        <% } %> <% if( kirim.statusKirim != 'R') {%>
         <a
-          href="/kirimsurat/edit/<%= kirimsurat[i]._id %>"
+          href="/kirimsurat/edit/<%= kirim._id %>"
           class="btn btn-warning btn-sm"
         >
           <i class="fas fa-pencil-alt"> Edit </i>
         </a>
-        <% } %> <% if(kirimsurat[i].statusKirim != 'D') {%>
+        <% } %> <% if(kirim.statusKirim != 'D') {%>
         <form
-          action="/kirimsurat/delete/<%= kirimsurat[i]._id %>?_method=DELETE"
+          action="/kirimsurat/delete/<%= kirim._id %>?_method=DELETE"
           method="POST"
           style="display: inline-block"
         >

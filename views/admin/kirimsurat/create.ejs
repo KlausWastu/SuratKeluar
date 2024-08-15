@@ -47,7 +47,7 @@
                     <option selected="selected">Pilih Nomor Dokumen</option>
                     <% nodokumen.forEach(nodok=> { %>
                     <option value="<%= nodok._id%>">
-                      <%= nodok.noDokumen %>
+                      <%= nodok.noDokumen %> - <%= nodok.perihal.length > 50 ? nodok.perihal.slice(0,50)+ " ..." : nodok.perihal %>
                     </option>
                     <% }) %>
                   </select>
@@ -96,19 +96,19 @@
                   ><label>Tanggal Kirim :</label>
                   <div
                     class="input-group date"
-                    id="tanggalkirim"
+                    id="reservationdate"
                     data-target-input="nearest"
                   >
                     <input
                       type="text"
                       name="tanggalkirim"
                       class="form-control datetimepicker-input"
-                      data-target="#tanggalkirim"
+                      data-target="#reservationdate"
                       required
                     />
                     <div
                       class="input-group-append"
-                      data-target="#tanggalkirim"
+                      data-target="#reservationdate"
                       data-toggle="datetimepicker"
                     >
                       <div class="input-group-text">
@@ -116,52 +116,6 @@
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="form-group">
-                  <label>Tanggal Terima :</label>
-                  <div
-                    class="input-group date"
-                    id="tanggalterima"
-                    data-target-input="nearest"
-                  >
-                    <input
-                      type="text"
-                      name="tanggalterima"
-                      class="form-control datetimepicker-input"
-                      data-target="#tanggalterima"
-                    />
-                    <div
-                      class="input-group-append"
-                      data-target="#tanggalterima"
-                      data-toggle="datetimepicker"
-                    >
-                      <div class="input-group-text">
-                        <i class="fa fa-calendar"></i>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label style="color: red">*</label
-                  ><label for="noresi">Nomor Resi</label>
-                  <input
-                    type="text"
-                    name="noresi"
-                    class="form-control"
-                    id="noresi"
-                    placeholder="Masukan Nomor Resi"
-                    required
-                  />
-                </div>
-                <div class="form-group">
-                  <label for="penerima">Penerima</label>
-                  <input
-                    type="text"
-                    name="penerima"
-                    class="form-control"
-                    id="penerima"
-                    placeholder="Masukan Nama Penerima"
-                  />
                 </div>
               </div>
               <div class="card-footer">
@@ -189,10 +143,4 @@
       fieldHandcarry.style.display = "none";
     }
   };
-  $("#tanggalkirim").datetimepicker({
-    format: "L",
-  });
-  $("#tanggalterima").datetimepicker({
-    format: "L",
-  });
 </script>

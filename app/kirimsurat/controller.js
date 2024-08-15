@@ -36,7 +36,7 @@ module.exports = {
         statusskkirim: false,
       });
       const kurir = await Kurir.find({ isdeleted: false });
-      const pegawai = await Pegawai.find();
+      const pegawai = await Pegawai.find({ isdeleted: false });
 
       res.render("admin/kirimsurat/create", {
         nodokumen,
@@ -57,25 +57,12 @@ module.exports = {
 
   actionCreate: async (req, res) => {
     try {
-      const {
-        noDokumen,
-        kurir,
-        tanggalkirim,
-        tanggalterima,
-        noresi,
-        penerima,
-        namehandcarry,
-      } = req.body;
+      const { noDokumen, kurir, tanggalkirim, namehandcarry } = req.body;
       const dokumen = await KirimSurat.findOne({
         nodokumen: noDokumen,
         statusKirim: ["D", "T"],
       });
-      const tanggalKirimID = moment(tanggalkirim, "MM/DD/YYYY")
-        .locale("id")
-        .format("L");
-      const tanggalTerimaID = moment(tanggalterima, "MM/DD/YYYY")
-        .locale("id")
-        .format("L");
+
       if (dokumen) {
         if (dokumen.isdeleted === true) {
           if (dokumen.statusKirim === "T") {
@@ -91,10 +78,7 @@ module.exports = {
               {
                 nodokumen: noDokumen,
                 kurir,
-                tanggalKirim: tanggalKirimID,
-                tanggalTerima: tanggalTerimaID,
-                noresi,
-                penerima,
+                tanggalKirim: tanggalkirim,
                 statusKirim: "D",
                 isdeleted: false,
               }
@@ -123,10 +107,7 @@ module.exports = {
             const newKirim = new KirimSurat({
               nodokumen: noDokumen,
               kurir,
-              tanggalKirim: tanggalKirimID,
-              tanggalTerima: tanggalTerimaID,
-              noresi,
-              penerima,
+              tanggalKirim: tanggalkirim,
             });
             await SuratKeluar.findOneAndUpdate(
               { _id: noDokumen },
@@ -145,10 +126,7 @@ module.exports = {
             nodokumen: noDokumen,
             kurir,
             namaHandCarry: namehandcarry,
-            tanggalKirim: tanggalKirimID,
-            tanggalTerima: tanggalTerimaID,
-            noresi,
-            penerima,
+            tanggalKirim: tanggalkirim,
           });
           await SuratKeluar.findOneAndUpdate(
             { _id: noDokumen },
@@ -163,10 +141,7 @@ module.exports = {
           const newKirim = new KirimSurat({
             nodokumen: noDokumen,
             kurir,
-            tanggalKirim: tanggalKirimID,
-            tanggalTerima: tanggalTerimaID,
-            noresi,
-            penerima,
+            tanggalKirim: tanggalkirim,
           });
           await SuratKeluar.findOneAndUpdate(
             { _id: noDokumen },
@@ -190,13 +165,16 @@ module.exports = {
       const { id } = req.params;
       const nodokumen = await SuratKeluar.find({ status: "S" });
       const kurir = await Kurir.find({ isdeleted: false });
+      const pegawai = await Pegawai.find({ isdeleted: false });
       const kirimsurat = await KirimSurat.findOne({ _id: id })
         .populate("nodokumen")
-        .populate("kurir");
+        .populate("kurir")
+        .populate("namaHandCarry");
 
       res.render("admin/kirimsurat/edit", {
         nodokumen,
         kurir,
+        pegawai,
         kirimsurat,
         role: req.session.user.role,
         name: req.session.user.name,
@@ -233,33 +211,31 @@ module.exports = {
   actionEdit: async (req, res) => {
     try {
       const { id } = req.params;
-      const {
-        noDokumen,
-        kurir,
-        tanggalkirim,
-        tanggalterima,
-        noresi,
-        penerima,
-      } = req.body;
-      const tanggalKirimID = moment(tanggalkirim, "MM/DD/YYYY")
-        .locale("id")
-        .format("L");
-      const tanggalTerimaID = moment(tanggalterima, "MM/DD/YYYY")
-        .locale("id")
-        .format("L");
-      await KirimSurat.findOneAndUpdate(
-        {
-          _id: id,
-        },
-        {
-          nodokumen: noDokumen,
-          kurir,
-          tanggalKirim: tanggalKirimID,
-          tanggalTerima: tanggalTerimaID,
-          noresi,
-          penerima,
-        }
-      );
+      const { noDokumen, kurir, tanggalkirim, nameHandCarry } = req.body;
+      if(kurir === "64378bb0227ecdcdacef9705"){
+        await KirimSurat.findOneAndUpdate(
+          {
+            _id: id,
+          },
+          {
+            nodokumen: noDokumen,
+            namaHandCarry: nameHandCarry,
+            kurir,
+            tanggalKirim: tanggalkirim,
+          }
+        );
+      } else {
+        await KirimSurat.findOneAndUpdate(
+          {
+            _id: id,
+          },
+          {
+            nodokumen: noDokumen,
+            kurir,
+            tanggalKirim: tanggalkirim,
+          }
+        );
+      }
       req.flash("alertMessage", "Berhasil edit kirim surat");
       req.flash("alertStatus", "success");
       res.redirect("/kirimsurat");
