@@ -39,18 +39,33 @@
               action="/suratkeluar/edit/<%= suratkeluar._id %>?_method=PUT"
               method="POST"
               enctype="multipart/form-data"
+              autocomplete="off"
             >
               <div class="card-body">
                 <div class="form-group">
                   <label for="tanggal">Tanggal </label>
-                  <input
-                    type="text"
-                    name="tanggal"
-                    class="form-control"
-                    id="tanggal"
-                    value="<%= suratkeluar.tanggal %>"
-                    disabled
-                  />
+                  <div
+                    class="input-group date"
+                    id="reservationdate"
+                    data-target-input="nearest"
+                  >
+                    <input
+                      type="text"
+                      class="form-control datetimepicker-input"
+                      data-target="#reservationdate"
+                      name="tanggal"
+                      value="<%= suratkeluar.tanggal%>"
+                    />
+                    <div
+                      class="input-group-append"
+                      data-target="#reservationdate"
+                      data-toggle="datetimepicker"
+                    >
+                      <div class="input-group-text">
+                        <i class="fa fa-calendar"></i>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="form-group">
                   <label>Kode Klasifikasi</label>
@@ -98,7 +113,7 @@
                     value="<%= suratkeluar.perihal %>"
                   />
                 </div>
-                <div class="form-group">
+                <div class="form-group autocomplete">
                   <label for="tujuan">Tujuan</label>
                   <input
                     type="text"
@@ -106,9 +121,18 @@
                     class="form-control"
                     id="tujuan"
                     placeholder="Masukan alamat tujuan"
+                    value="<%= suratkeluar.tujuan %>"
+                    required
+                  />
+                  <!-- <input
+                    type="text"
+                    name="tujuan"
+                    class="form-control"
+                    id="tujuan"
+                    placeholder="Masukan alamat tujuan"
                     required
                     value="<%= suratkeluar.tujuan %>"
-                  />
+                  /> -->
                 </div>
                 <div class="form-group">
                   <label>Penyusun</label>
@@ -184,4 +208,616 @@
   </section>
   <!-- /.content -->
 </div>
+<script>
+  const historyTujuan = [
+    " Panitia Pengadaan Pembangunan Pabrik Garam PT SPJT",
+    "'- PT Yodya Karya (Persero) Wilayah I Semarang - PT Pura Barutama (Group) Divisi Engineering - Tim Teknis Pabrik Garam PT SPJT",
+    "'- PT Yodya Karya (Persero) Wilayah I Semarang - PT Pura Barutama (Group) Divisi Engineering - Tim Teknis Pabrik Garam PT SPJT - Tim Teknis Pekerjaan Pembangunan Gedung Pabrik Garam PT SPJT (Dinas PUBMCK Provinsi Jawa Tengah)",
+    "1) Gubernur Jawa Tengah Cq. Kepala Biro Perekonomian Setda Provinsi Jawa Tengah 2) Pengurus Koperasi Pegawai Republik Indonesia (KPRI) Bhakti Praja Provinsi Jawa Tengah",
+    "1. ASISTEN EKONOMI DAN PEMBANGUNAN SETDA PROV JATENG 2. KEPALA BIRO PEREKONOMIAN SETDA PROV JATENG",
+    "1. Bapak Kepala Biro Umum dan Pengadaan Barang/Jasa Kementerian Kelautan dan Perikanan 2. Direktur Pasar Digital Pengadaan Lembaga Kebijakan Pengadaan Barang dan Jasa Pemerintah",
+    "1. Dinas Peternakan dan Kesehatan Hewan Provinsi Jawa Tengah 2. Dinas Pertanian Kota Semarang",
+    "1. Direktur Pasar Digital Pengadaan LKPP 2. Kepala Biro APBJ Provinsi Jawa Tengah",
+    "1. GSS Energy Trembul Limited 2. PT Sarana GSS Trembul",
+    "1. Gubernur Jawa Tengah  C.Q Kepala Biro Perekonomian Setda Provinsi Jawa Tengah 2. Pengurus Koperasi Pegawai Republik Indonesia (KPRI) Bhakti Praja Provinsi Jawa Tengah",
+    "1. KOMISARIS PT SPJT 2. BAPAK SARWA PRAMANA 3. BAPAK RM. BAGUS WISNU HANDOYO 4. SEKRETARIS KOMISARIS PT SPJT",
+    "Abhinaya Sheva Djatmika",
+    "Ady Tri Hartanto",
+    "Agrosari Farm",
+    "Agusman",
+    "Akademi Entrepreneurship Terang Bangsa",
+    "Aldio Bayu Aji",
+    "Alifia Intan Saputri",
+    "Anggota (terlampir)",
+    "Anwar",
+    "Asisten Ekonomi dan Pembangunan Setda Prov Jateng 2. Kepala Biro Perekonomian Setda Prov Jateng",
+    "Asisten Ekonomi dan Pembangunan Setda Provinsi Jawa Tengah",
+    "Astra Infra Solutions",
+    "Badan Penanggulangan Bencana Daerah (BPBD) Kabupaten Pati",
+    "Badan Pengelola Keuangan dan Aset Daerah Provinsi Jawa Tengah",
+    "Balai Besar Pelaksana Jalan Nasional Jateng - DIY",
+    "Balai Pemusatan Pendidikan dan Latihan Olahraga Pelajar selaku PPKom",
+    "Balai Prasarana Permukiman Wilayah Jawa Tengah",
+    "Bangga Irawan (Plt GM UB Jasa Konstruksi & Perdagangan Bahan Bangunan)",
+    "Bangga Irawan Wijaya Arianto",
+    "Bangga Irawan Wijaya Arifianto",
+    "Bank BRI KC Semarang Brigjen Sudiarto",
+    "Bank BTN Syariah Cabang Ahmad Yani Semarang",
+    "Bank BTN Syariah Semarang",
+    "Bank Jateng",
+    "Bank Jateng Capem Setwilda",
+    "CV Tri Mitra Jaya",
+    "CV Tekun",
+    "CV Premana Sari",
+    "CV Premana Perkasa",
+    "CV Mandiri Pangan",
+    "CV Karya Nafa Perkasa",
+    "CV Karagen Indonesia",
+    "CV HR Publik Indonesia",
+    "CV Duma Jaya Sakti",
+    "CV D40 Perkasa",
+    "CV Cepogo Agro Lestari",
+    "CV Brawijaya Putra",
+    "CV Bintang Jaya Abadi",
+    "CV Arnindo Jaya Perkasa (AGK Konfeksi)",
+    "CV Arnindo Jaya Perkasa",
+    "CV Arijofa Perkasa",
+    "CV Anugrah Fiber (Biomien)",
+    "CRBC",
+    "Carissa Nadia Retianza",
+    "Calon Penyedia Mesin Pabrik Garam Industri PT SPJT yang Terdaftar pada E-Katalog",
+    "Calon Penyedia Mesin Pabrik Garam Industri PT SPJT",
+    "Bupati Kabupaten Blora",
+    "Bupati Brebes",
+    "Bupati Grobogan",
+    "Bupati Sragen",
+    "BTN Syariah Semarang",
+    "BTN Syariah KC Semarang",
+    "BRI KC Semarang Brigjen Sudiarto",
+    "BPR BKK Wonogiri",
+    "BPR BKK Kota Pekalongan (Perseroda)",
+    "BPR BKK Kebumen",
+    "BPKAD Provinsi Jawa Tengah",
+    "BPJS Kesehatan Cabang Semarang",
+    "BPBD Provinsi Jawa Tengah",
+    "BKK Wonogiri",
+    "BKK Kota Pekalongan (Perseroda)",
+    "Biro Umum Setda Provinsi Jawa Tengah",
+    "Biro Umum Kementerian Kelautan dan Perikanan",
+    "Biro Perekonomian Setda Provinsi Jawa Tengah",
+    "Biro Infrastruktur dan SDA Setda Provinsi Jawa Tengah",
+    "Biro Hukum Setda Provinsi Jawa Tengah",
+    "Biro APBJ Provinsi Jawa Tengah Up. Tim Teknis Pembangunan Pabrik Garam PT SPJT",
+    "Biro APBJ Provinsi Jawa Tengah",
+    "Biro Administrasi Pengadaan Barang/Jasa Provinsi Jawa Tengah",
+    "Biro Administrasi Pengadaan Barang Jasa Provinsi Jawa Tengah",
+    "Baznas Provinsi Jawa Tengah",
+    "Bapak Zaki",
+    "Bapak Yanto",
+    "Pengadaan Barang/Jasa Pemerintah",
+    "Bapak Deputi Bidang Hukum dan Penyelesaian Sanggah Lembaga Kebijakan",
+    "Bank Tabungan Negara Syariah KCP Ahmad Yani",
+    "Bank Syariah Indonesia KC Semarang Pandanaran",
+    "Bank Syariah Indonesia Kantor Cabang Pandanaran Semarang",
+    "Bank Syariah Indonesia Cabang Pandanaran Semarang",
+    "Bank Syariah Indonesia Cabang Pandanaran",
+    "Bank Rakyat Indonesia KC Semarang Brigjen Sudiarto",
+    "Bank Rakyat Indonesia KC Brigjen Sudiarto",
+    "Bank Mandiri Taspen Semarang",
+    "Bank Mandiri Taspen KC Semarang",
+    "Bank Mandiri Taspen Cabang Semarang",
+    "Bank Mandiri Taspen Cabang MT. Haryono Semarang",
+    "Bank Mandiri Taspen",
+    "Bank Mandiri Cabang Semarang Candi Baru",
+    "CV Tugu Mulyo",
+    "CV Vito Jaya Pratama",
+    "CV Wakon",
+    "Deputi Bidang Hukum dan Penyelesaian Sanggah Lembaga Kebijakan Pengadan Barang/Jasa Pemerintah",
+    "Dewan Komisaris PT SPJT",
+    "Dewan Pengurus KORPRI Jawa Tengah",
+    "Dewan Pengurus Korpri Provinsi Jawa Tengah",
+    "Dewi Ayuningtyas",
+    "Dinas BPKAD Provinsi Jawa Tengah",
+    "Dinas Kepemudaan",
+    "Dinas Ketenagakerjaan Kota Semarang",
+    "Dinas Komunikasi dan Informatika Provinsi Jawa Tengah",
+    "Dinas Komunikasi dan Informatika Provinsi Jawa Tengah Up. Kepala Bidang Statistik",
+    "Dinas Pemberdayaan Perempuan Perlindungan Anak dan Pengendalian Penduduk dan Keluarga Berencana Provinsi Jawa Tengah",
+    "Dinas Perikanan Kabupaten Brebes",
+    "Dinas Perindustrian dan Perdagangan Provinsi Jawa Tengah",
+    "Dinas Pertanian Kota Semarang",
+    "Dinas Peternakan dan Kesehatan Hewan Provinsi Jawa Tengah",
+    "Dinas PUBMCK Provinsi Jawa Tengah",
+    "Dinas Tenaga Kerja Kabupaten Pati",
+    "Direksi & Karyawan PT SPJT",
+    "Direktorat Lalu Lintas Polda Jateng",
+    "Direktorat Reserse Kriminal Umum Polda Jawa Tengah",
+    "Direktur Advokasi Pemerintah Daerah LKPP",
+    "Direktur Lalu Lintas Jalan",
+    "Direktur Pasar Digital Pengadaan Lembaga Kebijakan Pengadaan Barang dan Jasa Pemerintah",
+    "Direktur Pasar Digital Pengadaan LKPP",
+    "Dirlantas Polda Jateng",
+    "Dirreskrimum Polda Jateng",
+    "Divisi Pengembangan Bisnis PT SPJT",
+    "Dwi Indriastuti (Direktur Umum)",
+    "Egi Septiansyah",
+    "Eka Wahyu Ariansyah",
+    "Eko Budi Utomo",
+    "Elok Farida Husnawati",
+    "Enes Suganda",
+    "Fakultas Ilmu Komputer Universitas Dian Nuswantoro",
+    "Fakultas Psikologi Unika Soegijapranata",
+    "Fakultas Teknik Universitas Trunojoyo Madura",
+    "Fathkul Hakim",
+    "Ferdy Kurniantoro",
+    "GETL dan PT Sarana GSS Trembul",
+    "Gubernur Jawa Tengah c.q. Kepala Biro Perekonomian Setda Provinsi Jawa Tengah",
+    "Gubernur Jawa Tengah Selaku Pemegang Saham PT SPJT",
+    "Gubernur Sumatera Barat",
+    "Hadi Wiyono",
+    "Hakim Pengawas PT Megatama Putra (dalam pailit)",
+    "Hakim Pengawas PT Megatama Putra (dalam pailit) Pengadilan Negeri Semarang",
+    "Horapa Seafood & Thai Kitchen",
+    "Hotel Horison Nindya",
+    "Hotel Santika Premiere",
+    "HR Publik",
+    "Ibu Zubaedah",
+    "Inspektorat Provinsi Jawa Tengah",
+    "Institut Pemerintahan Dalam Negeri (IPDN)",
+    "Jati Kristiana",
+    "Jawaraland Corp.",
+    "Kantor Akuntan Publik Arnestesa",
+    "Kantor Akuntan Publik Djoko",
+    "Kantor Akuntan Publik HLB Hadori",
+    "Kantor Hukum Anwar",
+    "Kantor Pelayanan Pajak Madya Dua Semarang",
+    "KAP Arnestesa",
+    "KAP Djoko",
+    "KAP Hadori Sugiarto Adi & Rekan",
+    "Karyawan PT SPJT",
+    "Kementerian Investasi/BKPM",
+    "Kementerian Kelautan Perikanan",
+    "Kementerian Kelautan Perikanan UP. Bapak Mohamad Zaki Mahasin",
+    "Kepala RPH Penggaron",
+    "Kepala Sekolah SMKN 7 Semarang",
+    "Ketua Sains dan Teknologi Pergaraman Universitas Trunojoyo Madura",
+    "Ketua Yayasan MAJT",
+    "Kholis Muwaffiq",
+    "KJPP Guntur Eki Andri dan Rekan",
+    "KKA Azwir Arifin dan Rekan",
+    "KKA Enny Diah Awal",
+    "KKA Marcel Pryadarshi Soepeno",
+    "KKA Setya Widodo",
+    "Klaus Rajendra Wastu",
+    "KMMB Management Consulting Firm",
+    "KMMB Management Consulting Firm",
+    "KMMB Management Consulting Firm (KMMB)",
+    "Komisi Informasi Provinsi Jawa Tengah",
+    "Komisi Kepolisian Nasional",
+    "Konsultan Hukum Anwar",
+    "Konsultan Manajemen Mochamad Badowi",
+    "Koperasi Mutiara Laut Mandiri",
+    "Koperasi Produsen Mutiara Laut Mandiri",
+    "Koperasi Serba Usaha Mina Barokah",
+    "Koperasi Tani Sari Makmur",
+    "KPBJ Undip",
+    "KPRI Bhakti Praja Provinsi Jawa Tengah",
+    "Krisna Septiawan",
+    "Krisna Septiawan (Kurir)",
+    "Laksmi Deasyana Roostika Putri",
+    "LangCoco Indonesia",
+    "Lembaga Kebijakan Pengadaan Barang/Jasa Pemerintah",
+    "Lembaga Kebijakan pengadaan Barang/Jasa Pemerintah Cq. Deputi Bidang Hukum dan Penyelesaian Sanggah",
+    "Lembaga Psikologi HR Publik",
+    "Leo Hendra Permana",
+    "Likuidator PT Sarana Karya Jateng (Dalam Likuidasi)",
+    "Lisnawati",
+    "LKPP & Kementerian Kelautan Perikanan",
+    "LKPP dan Kementerian Kelautan Perikanan",
+    "M Fauzan",
+    "Mayora Group",
+    "Mokhamad Hermawan",
+    "Mulyadi",
+    "Mulyadi (Kepala Pabrik Garam Pati)",
+    "Niki Harum",
+    "Notaris Damar Susilowati",
+    "Noviella Rosa Kurniatr",
+    "Nugraha Ning Mulyo",
+    "Nuzulia Meike Wati",
+    "Pabrik Es Tirta Agung",
+    "Pabrik Garam Pati",
+    "Palang Merah Indonesia (PMI) Provinsi Jawa Tengah",
+    "Palang Merah Indonesia Provinsi Jawa Tengah",
+    "Panitia Pengadaan Pembangunan Pabrik Garam PT SPJT",
+    "Panitia Pengadaan PT Astra Tol Nusantara",
+    "Para Pemegang Saham PT SPJT",
+    "Para Pemegang Saham PT SPJT Melalui Kepala Biro Perekonomian Setda Provinsi Jawa Tengah",
+    "Pejabat Pembuat Komitmen Pembangunan Jalan Tol Semarang - Demak 2 Provinsi Jawa Tengah",
+    "Pejabat Pengadaan Barang/Jasa Biro Umum Setda Provinsi Jawa Tengah",
+    "Pejabat Pengelola Informasi dan Dokumentasi (PPID) Pelaksana pada PT SPJT",
+    "Pemegang Saham PT SPJT",
+    "Pemerintah Desa Krandon Lor",
+    "Pemerintah Desa Raci dan Koperasi Mutiara Laut Mandiri",
+    "Pemerintah Kabupaten Brebes",
+    "Pengadilan Negeri Semarang",
+    "Pengguna Anggaran/Barang BPKAD Provinsi Jawa Tengah",
+    "Perkumpulan Pemantau Keuangan Negara (PKN)",
+    "Perumda Varia Niaga Samarinda",
+    "Perusahaan Abon Abadi",
+    "Peserta Market Sounding Pengadaan Mesin Pabrik Garam Industri PT SPJT",
+    "Pimpinan Perusahaan",
+    "Pimpinan Proyek Pembangunan RSK Breast Haunaa",
+    "Plant Jambu Kulon Klaten",
+    "Plant Kebon Arum Klaten",
+    "Plant Mojokerto",
+    "PMI Jateng",
+    "Pokja Pemilihan II BPBJ Setda Kota Semarang",
+    "Politeknik Maritim Negeri Indonesia",
+    "Politeknik Negeri Semarang (POLINES)",
+    "PPK I Politeknik Maritim Negeri Indonesia",
+    "PPK Pembangunan Jalan Tol Semarang-Demak 2",
+    "PPKOM Satker Jalan Tol Semarang - Demak Sesi 1B",
+    "Prodi Teknik Sipil Unika Soegijapranata",
+    "Project Director Proyek Pembangunan Jalan Tol Semarang - Solo",
+    "Project Manager Proyek Pembangunan Rusun Dosen Politeknik Pekerjaan Umum",
+    "Proyek Rest Area KM 444+000B Tol Semarang Solo PT Jateng Agro Berdikari (Perseroda)",
+    "PT Adhi",
+    "PT Adhi Karya",
+    "PT Adhi Karya Proyek Tol Jogja-Bawen",
+    "PT Adhi Karya Proyek Tol Jogja-Solo Seksi 2.2",
+    "PT Adhi Persada Beton",
+    "PT Adhi Persada Beton Pabrik Precast Margomulyo",
+    "PT Adhi Persada Beton Plant Bawen",
+    "PT Agri Spice Indonesia",
+    "PT Altra Multi Sandang",
+    "PT Angling Dharmo Indonesia",
+    "PT Anugerah Indofood Barokah Makmur",
+    "PT Arah Enviromental Nusa",
+    "PT Aria Amandaru",
+    "PT Arnawarna Abhyudaya Abadi",
+    "PT Aset Investasi Indonesia",
+    "PT Asuransi Bangun Askrida",
+    "PT Asuransi Bangun Askrida Cabang Semarang",
+    "PT Asuransi Umum VIDEI",
+    "PT Bank Central Asia KCP Siliwangi",
+    "PT Bank Jateng Cabang Semarang",
+    "PT Bank Mandiri Cabang Semarang",
+    "PT Bank Rakyat Indonesia (Persero) TBK Kantor Cabang Semarang Brigjend Sudiarto",
+    "PT Barata Indonesia (Persero)",
+    "PT Bonanza Megah Ltd",
+    "PT BPR BKK Jateng (Perseroda)",
+    "PT BPR BKK Wonogiri",
+    "PT BPR BKK WONOGIRI (Perseroda)",
+    "PT BRI (Persero) Tbk Kantor Cabang Semarang Brigjend Sudiarto",
+    "PT Astari Marga Sarana",
+    "PT Askrida Cabang Semarang",
+    "PT Asuransi BRI Life",
+    "PT Ausico Mahendra",
+    "PT Bank Jateng",
+    "PT Budi Makmur Jaya Murni",
+    "PT Bright Foods International",
+    "PT Brantas Abipraya",
+    "PT BPR BKK Kebumen",
+    "PT BPR BKK Jateng",
+    "PT BKK Jateng",
+    "PT Bintang Ratu Mahatama",
+    "PT Berkah Mandiri Mulia Jaya",
+    "PT Barata Indonesia",
+    "PT Bank Rakyat Indonesia (Persero) TBK Kantor Cabang Semarang Papandayan",
+    "PT Bank Mandiri Taspen",
+    "PT Budi Starch & Sweetener Tbk (Rose Brand)",
+    "PT Bukit Perak",
+    "PT Pureo Kosmetik Masindo",
+    "PT Pura Barutama",
+    "PT Bumi Lintas Raya",
+    "PT Bumi Manunggal Niaga",
+    "PT Cahaya Gunung Foods",
+    "PT Capung Indah Abadi",
+    "PT Cartini Lingerie Indonesia",
+    "PT Cassatama Naturindo",
+    "PT Citatah Marmer Indonesia",
+    "PT Dae Young Textile",
+    "PT Dagsap Endura",
+    "PT Damarus Food Industry",
+    "PT Dua Kelinci",
+    "PT Empora Gaharu",
+    "PT Es Hupindo",
+    "PT Eslar Utama",
+    "PT FKS Food Sejahtera Tbk",
+    "PT Food Station Tjipinang Jaya",
+    "PT Gading Digstar Karya Abadi",
+    "PT Garam (Persero)",
+    "PT Garam (Perseroda)",
+    "PT Garnusa",
+    "PT Garudafood Putra Putri Jaya Tbk",
+    "PT Giasindo Surya Kencana",
+    "PT Global Enviro Nusa",
+    "PT Halim Pratama",
+    "PT Hanil Indonesia",
+    "PT Hutama Karya",
+    "PT Gogano Prima Asia",
+    "PT Havindo Pakan Optima",
+    "PT Indomina Cipta Agung",
+    "PT Indo Makmur Foods",
+    "PT Indoselo Lamtoro Agung",
+    "PT Indosigma Surya Cipta",
+    "PT Industri Jamu & Farmasi Sido Muncul",
+    "PT Industri Jamu Borobudur",
+    "PT Inkenas Agung",
+    "PT Insan Gemilang Internasional",
+    "PT Internet Mulia Untuk Negeri (NEXA)",
+    "PT Inti Karya Utama",
+    "PT Inti Karya Utama Semarang",
+    "PT Jadi Makmur Sejati",
+    "PT Jamkrida Jateng",
+    "PT Jasa Medivest",
+    "PT Jateng Agro Berdikari (JTAB)",
+    "PT Jateng Agro Berdikari (Perseroda)",
+    "PT Jateng Petro Energi (JPEN)",
+    "PT Java Agritech",
+    "PT Java Integrated Industrial and Port Estate",
+    "PT Java Prima Abadi",
+    "PT Juara Food Industry",
+    "PT Jul Fa International Foods",
+    "PT Jumanji Pantai Nyantai",
+    "PT KADI Internasional",
+    "PT Kanemory Food Service",
+    "PT Karya Prima Cendekia Utama",
+    "PT Karya Prima Lestari Cemerlang",
+    "PT Kawasan Industri Seafer - Kendal",
+    "PT Malindo Feed Mill Tbk",
+    "PT Kawasan Industri Wijayakusuma",
+    "PT Kranggan Bangun Persada",
+    "PT Manfaat Betula Makmur",
+    "PT Marimas Putera Kencana",
+    "PT Lingkar Persada",
+    "PT Mangkok Mas",
+    "PT Mayora Group",
+    "PT Mega Insurance",
+    "PT Mirasa Food Industry",
+    "PT Mitra Desa Pamarican",
+    "PT Morich Indo Fashion",
+    "PT Multi Beton Karya Mandiri",
+    "PT Mulya Agro Sawita",
+    "PT New Hope Indonesia",
+    "PT Nihon Novelica Food",
+    "PT Nindya Beton",
+    "PT Nindya Beton Unit Batching Plant Batang - KITB",
+    "PT Nindya Beton Unit Batching Plant Salatiga",
+    "PT Nindya Karya KSO PT Waskita Karya",
+    "PT Nuraya Pilar Mandiri",
+    "PT Padu Karya Jaya Nusa",
+    "PT Palawi Risorsis",
+    "PT Paton Buana Semesta",
+    "PT Pelabuhan Indonesia (Persero)",
+    "PT Pembangunan Perumahan",
+    "PT Penggaron Sarana Semesta",
+    "PT Penta-Ocean Construction Co.",
+    "PT Permai Sukses Bersama",
+    "PT Perusahaan Listrik Negara (Persero) Semarang",
+    "PT Perusahaan Listrik Negara (Persero) Semarang Unit Induk Distribusi (UID - Bagian Niaga)",
+    "PT Pesta Pora Abadi",
+    "PT Phapros",
+    "PT Phoeniq Harmoni Sejahtera",
+    "PT PP",
+    "PT PP (Persero) Tbk",
+    "PT Primatexco Indonesia",
+    "PT Progo Cahaya Sakti Abadi",
+    "PT PRPP (Pusat Rekreasi & Promosi Pembangunan)",
+    "PT Putra Sonopa Abadi",
+    "PT Putra Wijayakusuma Sakti",
+    "PT Putra Wira Tamtama",
+    "PT Qoryah Gilman Mandiri",
+    "PT Rama Artha Graha",
+    "PT Ratnajaya Indahutama",
+    "PT Ribut Snack",
+    "PT Safari Junie Textindo Industry",
+    "PT Saba Mas Pilangsari",
+    "PT Sajada Bangun Permata",
+    "PT Sanfood Prima Makmur",
+    "PT Sarana GSS Trembul",
+    "PT Sarana Patra Jateng",
+    "PT Sayung Adhimukti",
+    "PT Sekar Lima Pratama",
+    "PT Semen Indonesia Distributor",
+    "PT Sengon Kondang Nusantara",
+    "PT Sidoarjo Ciptanusa Food Industry",
+    "PT Silver Skyline Indonesia",
+    "PT Sinar Asia Pasuruan",
+    "PT SPJT Group",
+    "PT SPJT",
+    "PT SSA",
+    "PT Starfood Jaya Prima",
+    "PT Subang Sentral Industri",
+    "PT Tantra Textile Industry",
+    "PT Taruna Kusuma Purinusa",
+    "PT Timah Karya Persada Properti",
+    "PT Tirta Utama Jawa Tengah",
+    "PT Tarunakusuma Purinusa",
+    "PT Tirta Utama Jawa Tengah (Perseroda)",
+    "PT Trans Marga Jateng",
+    "PT Tri Jaya Tissues",
+    "PT Tri Mustika Internusa",
+    "PT Undip Citra Ciptaprima",
+    "PT Usmanjaya Mekar Textil Industry",
+    "PT Wahana Inti Makmur Tbk",
+    "PT Waskita Karya",
+    "PT Wastec International",
+    "PT Varia Usaha Beton",
+    "PT Wijaya Karya (Persero) Tbk",
+    "PT Wijaya Karya Bangunan Gedung Tbk",
+    "PT Yodya Karya (Persero) Wilayah I",
+    "PT. PURA BARUTAMA (GROUP)",
+    "PT. Adhi Persada Beton Proyek",
+    "PT. YODYA KARYA (PERSERO) WILAYAH I",
+    "PT.Bank Mandiri (Persero) Tbk Cabang Semarang Candi Baru",
+    "Pulito Laundry Semarang",
+    "Rani Indah Sulistyawati",
+    "Rayun Sekar Metta",
+    "Rekan Bisnis PT SPJT",
+    "Rektor Universitas Katolik Soegijapranata",
+    "Rektor Universitas Trunojoyo Madura",
+    "Riza Murniati",
+    "RS PKU Muhammadiyah Wonosari",
+    "RSD KRMT Wongsonegoro",
+    "RSJD Dr Amino Gondohutomo",
+    "RSJD Dr Arif Zainudin",
+    "RSJD Dr RM Soedjarwadi",
+    "RSJD Dr. Amino Gondohutomo",
+    "RSKIA 45 Prof Dr Ismangoen",
+    "RSUD DR Amino Gondohutomo",
+    "RSUD DR Arif Zainudin",
+    "RSUD DR Adhyatma",
+    "RSUD DR Moewardi",
+    "RSUD DR Rehatta",
+    "RSUD Prof DR Soedjarwadi",
+    "RSUD Prof DR Margono Soekardjo",
+    "RSUD Prof Dr Margono Soekarjo",
+    "Rudi Hermansyah",
+    "Rudy Hermawan",
+    "Sabtari Widyastapa",
+    "Sarwono",
+    "Satuan Pengawasan Internal PT SPJT",
+    "Satuan Pengawasan Internal PT SPJT (Rayun Sekar Metta)",
+    "Sdr Muji",
+    "Sekretaris Daerah Provinsi Jawa Tengah Cq. Kepala Biro Hukum Setda Provinsi Jawa Tengah",
+    "Sekretaris Daerah Provinsi Jawa Tengah selaku Atasan Pejabat Pengelola Informasi dan Dokumentasi",
+    "Sekretaris Daerah Selaku Ketua TP3DN Jawa Tengah",
+    "Sekretaris Jenderal Kementerian Kelautan dan Perikanan",
+    "Seluruh Rekanan PT SPJT",
+    "Septian Nugroho",
+    "Sigit Darojat",
+    "Sigit Pramono",
+    "Sinar Mas Group Pulp & Paper Division",
+    "Siti Rachmawati Pratiwi",
+    "SMK Muhammadiyah 1 Semarang",
+    "SMK Negeri 2 Semarang",
+    "SMK Negeri Jateng di Pati",
+    "SPI",
+    "SPJT Group",
+    "Subur Prabowo",
+    "Surat Kuasa Khusus terkait Sengketa Informasi Publik",
+    "Tegar Wicaksono",
+    "Tim Kurator PT Megatama Putra (dalam Pailit)",
+    "Tim Penyusun Laporan Tahunan Perusahaan Tahun 2023",
+    "Tim Penyusun RKAP PT SPJT Tahun 2024",
+    "Tim Satuan Tugas Pembangunan Pengolah Limbah B3 Medis",
+    "Tim Teknis & Konsultan Perencana Pabrik Garam",
+    "Tim Teknis Pabrik Garam PT SPJT",
+    "Tim Teknis Pabrik Garam",
+    "Tim Teknis Pekerjaan Sipil Pembangunan Pabrik Garam PT SPJT",
+    "Tim Teknis Pembangunan Pabrik Garam PT SPJT",
+    "Tim Teknis Pengadaan Barang dengan E-Catalog untuk Pembangunan Pabrik Garam PT SPJT",
+    "Toko OEN Semarang",
+    "Triyanto Dwi Hastanto",
+    "Tuan Ponco Eko Prastyo",
+    "UB Konstruksi dan Perdagangan Bahan Bangunan",
+    "UD Putra Bakti",
+    "UD Sukamaju",
+    "Unika Soegijapranata",
+    "Unit Bisnis Jasa Konstruksi dan Perdagangan Bahan Bangunan PT SPJT",
+    "UNIT V SUBDIT I/KAMNEG DITRESKRIMUM POLDA JATENG",
+    "UNIT V SUBDIT I/KAMNEG DITRESKRIMUM POLDA JATENG UP. PENYIDIK DALAM SURAT PERINTAH PENYELIDIKAN Nomor: Sp. Lidik/211.a/VI/2021/Ditreskrimum tanggal 3 Juni 2021",
+    "Universitas Trunojoyo Madura",
+    "Universitas Trunojoyo Madura UP. Nizar Amir",
+    "Untung Juanto",
+    "Wandi Dermanto Sinaga",
+    "Yayasan MAJT",
+    "Yordan Andy Christyawan dan Wandi Dermanto Sinaga",
+];
+
+  function autocomplete(inp, arr) {
+    var currentFocus;
+    inp.addEventListener("input", function(e) {
+        var a, b, i, val = this.value;
+        closeAllLists();
+        if (!val) { return false;}
+        currentFocus = -1;
+        /*create a DIV element that will contain the items (values):*/
+        a = document.createElement("DIV");
+        a.setAttribute("id", this.id + "autocomplete-list");
+        a.setAttribute("class", "autocomplete-items");
+        /*append the DIV element as a child of the autocomplete container:*/
+        this.parentNode.appendChild(a);
+        /*for each item in the array...*/
+        for (i = 0; i < arr.length; i++) {
+          /*check if the item starts with the same letters as the text field value:*/
+          if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+            /*create a DIV element for each matching element:*/
+            b = document.createElement("DIV");
+            /*make the matching letters bold:*/
+            b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+            b.innerHTML += arr[i].substr(val.length);
+            /*insert a input field that will hold the current array item's value:*/
+            b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+            /*execute a function when someone clicks on the item value (DIV element):*/
+            b.addEventListener("click", function(e) {
+                /*insert the value for the autocomplete text field:*/
+                inp.value = this.getElementsByTagName("input")[0].value;
+                /*close the list of autocompleted values,
+                (or any other open lists of autocompleted values:*/
+                closeAllLists();
+            });
+            a.appendChild(b);
+          }
+        }
+    });
+    /*execute a function presses a key on the keyboard:*/
+    inp.addEventListener("keydown", function(e) {
+        var x = document.getElementById(this.id + "autocomplete-list");
+        if (x) x = x.getElementsByTagName("div");
+        if (e.keyCode == 40) {
+          /*If the arrow DOWN key is pressed,
+          increase the currentFocus variable:*/
+          currentFocus++;
+          /*and and make the current item more visible:*/
+          addActive(x);
+        } else if (e.keyCode == 38) { //up
+          /*If the arrow UP key is pressed,
+          decrease the currentFocus variable:*/
+          currentFocus--;
+          /*and and make the current item more visible:*/
+          addActive(x);
+        } else if (e.keyCode == 13) {
+          /*If the ENTER key is pressed, prevent the form from being submitted,*/
+          e.preventDefault();
+          if (currentFocus > -1) {
+            /*and simulate a click on the "active" item:*/
+            if (x) x[currentFocus].click();
+          }
+        }
+    });
+    function addActive(x) {
+      /*a function to classify an item as "active":*/
+      if (!x) return false;
+      /*start by removing the "active" class on all items:*/
+      removeActive(x);
+      if (currentFocus >= x.length) currentFocus = 0;
+      if (currentFocus < 0) currentFocus = (x.length - 1);
+      /*add class "autocomplete-active":*/
+      x[currentFocus].classList.add("autocomplete-active");
+    }
+    function removeActive(x) {
+      /*a function to remove the "active" class from all autocomplete items:*/
+      for (var i = 0; i < x.length; i++) {
+        x[i].classList.remove("autocomplete-active");
+      }
+    }
+    function closeAllLists(elmnt) {
+      /*close all autocomplete lists in the document,
+      except the one passed as an argument:*/
+      var x = document.getElementsByClassName("autocomplete-items");
+      for (var i = 0; i < x.length; i++) {
+        if (elmnt != x[i] && elmnt != inp) {
+          x[i].parentNode.removeChild(x[i]);
+        }
+      }
+    }
+    /*execute a function when someone clicks in the document:*/
+    document.addEventListener("click", function (e) {
+        closeAllLists(e.target);
+    });
+  }
+  autocomplete(document.getElementById("tujuan"), historyTujuan);
+</script>
 <%- include ../../partials/footer.ejs %> <%- include ../../partials/js.ejs %>
